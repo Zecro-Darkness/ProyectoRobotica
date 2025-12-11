@@ -2,6 +2,8 @@
 
 ## Objetivo
 
+### parte 1
+
 El objetivo de la primera parte del proyecto  es crear una rutina de robot que pueda recoger 4 objetos distintos que siempre se ubicarán en la zona de recolección y luego depositarlos en la caneca correspondiente según su tipo.
 
 Los objetos son:
@@ -18,14 +20,13 @@ La clasificación de los objetos en las canecas será:
 - El pentágono debe dejarse en la caneca azul
 - El rectángulo debe dejarse en la caneca amarilla
 
-### parte 1
-
 ### Parte 2
 
 
 ## Solucion propuesta
 
 Descripcion de la solucion creada, el proceso de alistamiento, herramientas y piezas utilizadas, a manera de bit´acora del desarrollo del proyecto. No olviden ser detallados y describir el proceso como quieren que sea visto para sus pares.
+
 ## Diagrama de flujo de las acciones del robot, con sus respectivas descripciones.
 ## Descripcion, planos y fotografıas del gripper diseñado y sus piezas para el proceso de alistamiento.
 ## Modelo en RobotStudio de la celda de ensamble con todos los elementos que intervienen en el proceso.
