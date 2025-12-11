@@ -1,11 +1,29 @@
 # Informe Proyecto final
 
+## Objetivo
+
+El objetivo de la primera parte del proyecto  es crear una rutina de robot que pueda recoger 4 objetos distintos que siempre se ubicarán en la zona de recolección y luego depositarlos en la caneca correspondiente según su tipo.
+
+Los objetos son:
+
+ - Un cubo
+ - Un cilindro
+ - Un pentágono
+ - Un rectángulo
+
+La clasificación de los objetos en las canecas será:
+
+- El cubo debe dejarse en la caneca roja
+- El cilindro debe dejarse en la caneca verde
+- El pentágono debe dejarse en la caneca azul
+- El rectángulo debe dejarse en la caneca amarilla
+
+### parte 1
+
+### Parte 2
+
 
 ## Solucion propuesta
-
-### Proceso
-
-### herramientas
 
 Descripcion de la solucion creada, el proceso de alistamiento, herramientas y piezas utilizadas, a manera de bit´acora del desarrollo del proyecto. No olviden ser detallados y describir el proceso como quieren que sea visto para sus pares.
 ## Diagrama de flujo de las acciones del robot, con sus respectivas descripciones.
