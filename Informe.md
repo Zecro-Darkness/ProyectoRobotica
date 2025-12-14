@@ -43,8 +43,8 @@ Descripcion de la solucion creada, el proceso de alistamiento, herramientas y pi
 
 ## Diagrama de flujo de las acciones del robot, con sus respectivas descripciones.
 ## Descripcion, planos y fotografıas del gripper diseñado y sus piezas para el proceso de alistamiento.
-## Modelo en RobotStudio de la celda de ensamble con todos los elementos que intervienen en el proceso.
-## Codigo en RAPID comentado y discutido del m´odulo utilizado para el desarrollo del proyecto.
+## Modelo en RViz.
+## Codigo en ros2 comentado y discutido del m´odulo utilizado para el desarrollo del proyecto.
 ## Comparacion del tiempo de alistamiento manual y de operacion automatizada para las combinaciones seleccionadas.
 ## Videos
 
