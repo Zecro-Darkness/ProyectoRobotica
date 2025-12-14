@@ -12,10 +12,6 @@ Este proyecto implementa una solución de automatización para tareas de "pick a
   - Python (Lógica de control)
   - XML/Xacro (Descripción del robot)
   - YAML (Configuración)
-- **Herramientas de Alistamiento:**
-  - Destornilladores de precisión (para ajuste de eslabones).
-  - Calibrador (para verificación de dimensiones de objetos).
-  - Báscula (para verificación de carga útil).
 
 
 ## Objetivo
