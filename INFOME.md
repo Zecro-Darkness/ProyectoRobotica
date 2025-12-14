@@ -85,6 +85,49 @@ La clasificación de los objetos en las canecas será:
 - El pentágono debe dejarse en la caneca azul
 - El rectángulo debe dejarse en la caneca amarilla
 
+## 1. Implementación en Código
+La lógica se ha centralizado en el nodo 
+clasificador_node.py. Se utiliza un diccionario para mapear cada figura entrante con su destino (caneca) correspondiente, cumpliendo estrictamente con los colores solicitados.
+
+```python
+# Extracto de clasificador_node.py
+self.figure_to_bin = {
+    'cubo': 'caneca_roja',            # Cubo -> Caneca Roja
+    'cilindro': 'caneca_verde',       # Cilindro -> Caneca Verde
+    'pentagono': 'caneca_azul',       # Pentágono -> Caneca Azul
+    'rectangulo': 'caneca_amarilla'   # Rectángulo -> Caneca Amarilla
+}
+
+## 2. Lógica de Deposición (Secuencia Completa)
+
+El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** para que la secuencia de *movimiento + agarre* sea robusta:
+
+1. **Recepción del comando:** el nodo escucha el tópico `/figure_type`.
+2. **Preparación:** mueve el robot a `HOME2` y abre el gripper.
+3. **Recolección:** baja a la posición de recolección (`recoleccion`) definida en `poses.yaml`.
+4. **Agarre:** cierra el gripper para sujetar la figura.
+5. **Transporte seguro:**
+   - retorna a `HOME2` antes de ir a la caneca para asegurar altura.
+6. **Deposición:** llega a la coordenada de la caneca asignada (ej: `caneca_roja`) y abre el gripper.
+7. **Retorno:** regresa a `HOME2` siguiendo la ruta inversa segura.
+
+## 3. Comandos de Operación
+Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se deben ejecutar los siguientes comandos en una terminal con el entorno ROS2 cargado:
+
+Clasificar CUBO (Caneca Roja):
+
+ros2 topic pub /figure_type std_msgs/msg/String "data: 'cubo'" --once
+Clasificar CILINDRO (Caneca Verde):
+
+ros2 topic pub /figure_type std_msgs/msg/String "data: 'cilindro'" --once
+Clasificar PENTÁGONO (Caneca Azul):
+
+ros2 topic pub /figure_type std_msgs/msg/String "data: 'pentagono'" --once
+Clasificar RECTÁNGULO (Caneca Amarilla):
+
+ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once
+
+
 ### Rutina de clasificacion de nodo
  Diagrama tipo rqt_graph o equivalente, explicando tópicos/servicios/acciones y flujo de datos.
 
