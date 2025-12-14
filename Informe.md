@@ -1,4 +1,22 @@
-# Informe Proyecto final
+# Proyecto de Robótica: Clasificación con PhantomX Pincher
+
+## 1. Descripción de la Solución
+
+Este proyecto implementa una solución de automatización para tareas de "pick and place" utilizando un brazo robótico PhantomX Pincher. El sistema utiliza ROS2 sobre Ubuntu 20.04/Linux para controlar el robot de manera precisa.
+
+### Herramientas y Piezas Utilizadas
+
+- **Robot:** PhantomX Pincher (4 Grados de Libertad + Gripper).
+- **Software Principal:** ROS2 (Robot Operating System 2).
+- **Lenguajes:**
+  - Python (Lógica de control)
+  - XML/Xacro (Descripción del robot)
+  - YAML (Configuración)
+- **Herramientas de Alistamiento:**
+  - Destornilladores de precisión (para ajuste de eslabones).
+  - Calibrador (para verificación de dimensiones de objetos).
+  - Báscula (para verificación de carga útil).
+
 
 ## Objetivo
 
