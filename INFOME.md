@@ -56,7 +56,7 @@ Garantizar movimientos seguros y repetibles mediante estados y posiciones predef
 ## Parte 1
 
 ### Objetivo
-El objetivo de esta guía es crear una rutina de robot que pueda recoger 4 objetos distintos que siempre se ubicarán en la zona de recolección y luego depositarlos en la caneca correspondiente según su tipo.
+El objetivo es crear una rutina de robot que pueda recoger 4 objetos distintos que siempre se ubicarán en la zona de recolección y luego depositarlos en la caneca correspondiente según su tipo.
 
 Los objetos son:
 
