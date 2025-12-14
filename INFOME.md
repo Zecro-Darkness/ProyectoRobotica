@@ -97,7 +97,7 @@ self.figure_to_bin = {
     'pentagono': 'caneca_azul',       # Pentágono -> Caneca Azul
     'rectangulo': 'caneca_amarilla'   # Rectángulo -> Caneca Amarilla
 }
-
+```
 
 ## 2. Lógica de Deposición (Secuencia Completa)
 
@@ -115,18 +115,21 @@ El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** pa
 ## 3. Comandos de Operación
 Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se deben ejecutar los siguientes comandos en una terminal con el entorno ROS2 cargado:
 
-Clasificar CUBO (Caneca Roja):
+**Clasificar CUBO (Caneca Roja):**
 
-ros2 topic pub /figure_type std_msgs/msg/String "data: 'cubo'" --once
-Clasificar CILINDRO (Caneca Verde):
+```ros2 topic pub /figure_type std_msgs/msg/String "data: 'cubo'" --once```
 
-ros2 topic pub /figure_type std_msgs/msg/String "data: 'cilindro'" --once
-Clasificar PENTÁGONO (Caneca Azul):
+**Clasificar CILINDRO (Caneca Verde):**
 
-ros2 topic pub /figure_type std_msgs/msg/String "data: 'pentagono'" --once
-Clasificar RECTÁNGULO (Caneca Amarilla):
+```ros2 topic pub /figure_type std_msgs/msg/String "data: 'cilindro'" --once```
 
-ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once
+**Clasificar PENTÁGONO (Caneca Azul):**
+
+```ros2 topic pub /figure_type std_msgs/msg/String "data: 'pentagono'" --once```
+
+**Clasificar RECTÁNGULO (Caneca Amarilla):**
+
+```ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once```
 
 
 ### Rutina de clasificacion de nodo
