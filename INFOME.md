@@ -211,8 +211,55 @@ ros2 run phantomx_pincher_classification teleop_joint_node
 ### Nodo de control de ventosa
  Diagrama tipo rqt_graph o equivalente, explicando tópicos/servicios/acciones y flujo de datos.
 ### Foto/diagrama del circuito y explicación de cómo se controla desde el sistema.
-### Lista de paquetes creados, propósito, nodos principales y cómo ejecutarlos.
+## Lista de paquetes creados, propósito, nodos principales y cómo ejecutarlos.
+Para el desarrollo del proyecto se modularizó la solución en diferentes paquetes, cada uno con una responsabilidad específica dentro de la arquitectura del robot. A continuación se detallan los paquetes creados y utilizados:
 
+### 1. `phantomx_pincher_classification` (Paquete Principal)
 
+Este es el paquete central desarrollado por el equipo. Contiene la lógica específica para la clasificación de figuras y el control manual requerido.
+
+- **Propósito:** Implementar los algoritmos de percepción, lógica de estados y teleoperación.
+- **Nodos principales:**
+  - `teleop_joint_node`: Nodo de teleoperación por teclado con control articular y manejo de ventosa.
+  - `clasificador_node`: Nodo principal que orquesta la rutina automática de detección, *pick* y *place*.
+  - `teleop_node` *(Legacy)*: Versión básica de teleoperación.
+
+### Comandos de ejecución
+
+```bash
+# Para control manual
+ros2 run phantomx_pincher_classification teleop_joint_node
+
+# Para rutina automática
+ros2 run phantomx_pincher_classification clasificador_node
+```  
+
+## 2. `phantomx_pincher_bringup`
+
+Paquete encargado del despliegue y orquestación del sistema.
+
+- **Propósito:** Contiene los archivos de lanzamiento (*launch files*) que inician todos los drivers, el modelo del robot y la configuración de MoveIt simultáneamente.
+- **Archivos clave:**
+  - `phantomx_pincher.launch.py`: *Launch file* maestro.
+
+### Comando de ejecución
+
+```bash
+ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py
+```
+
+## 3. `phantomx_pincher_description`
+
+Paquete que define la morfología del robot.
+
+- **Propósito:** Almacenar la descripción cinemática y visual del robot en formato URDF/XACRO. Define las longitudes de los eslabones, límites de las articulaciones y mallas visuales 3D.
+- **Uso:** Es invocado automáticamente por el *bringup* y MoveIt para saber “cómo es” el robot.
+
+## 4. `phantomx_pincher_moveit_config`
+
+Paquete de configuración de planificación de movimiento.
+
+- **Propósito:** Contiene la matriz de colisiones (SRDF), configuración de cinemática inversa (KDL/Kinematics) y controladores de trayectoria generados por el *MoveIt Setup Assistant*.
+- **Importancia:** Permite que el robot planifique rutas para evitar colisiones consigo mismo y alcance las poses deseadas suavemente.
 
 
