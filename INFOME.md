@@ -113,6 +113,17 @@ El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** pa
 7. **Retorno:** regresa a `HOME2` siguiendo la ruta inversa segura.
 
 ## 3. Comandos de Operación
+
+Para que el robot reaccione a los comandos, primero debes iniciar el Rviz con el siguiente comando y despues el nodo clasificador con los siguiente comandos:
+
+```
+// Activa Rviz se usa "True" para activar el robot real
+ros2 launch phantomx_pincher_bringup  phantomx_pincher.launch.py use_real_robot:=True
+
+//Activar el modo de clasificacion automatico
+ros2 run phantomx_pincher_classification clasificador_node
+```
+
 Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se deben ejecutar los siguientes comandos en una terminal con el entorno ROS2 cargado:
 
 **Clasificar CUBO (Caneca Roja):**
