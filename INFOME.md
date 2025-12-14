@@ -89,14 +89,15 @@ La clasificación de los objetos en las canecas será:
 La lógica se ha centralizado en el nodo 
 clasificador_node.py. Se utiliza un diccionario para mapear cada figura entrante con su destino (caneca) correspondiente, cumpliendo estrictamente con los colores solicitados.
 
-´´python
+´´´ python
 # Extracto de clasificador_node.py
 self.figure_to_bin = {
     'cubo': 'caneca_roja',            # Cubo -> Caneca Roja
     'cilindro': 'caneca_verde',       # Cilindro -> Caneca Verde
     'pentagono': 'caneca_azul',       # Pentágono -> Caneca Azul
     'rectangulo': 'caneca_amarilla'   # Rectángulo -> Caneca Amarilla
-}´´
+}
+´´´
 
 ## 2. Lógica de Deposición (Secuencia Completa)
 
