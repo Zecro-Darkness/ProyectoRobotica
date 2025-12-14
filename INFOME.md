@@ -8,13 +8,22 @@
 - Edgar Esteban Erazo Lagos
 
 
-Conceptos Técnicos Clave Para entender y modificar este proyecto, es útil tener en cuenta los siguientes conceptos: 
+## Conceptos Técnicos Clave
+Para entender y modificar este proyecto, es útil tener en cuenta los siguientes conceptos: 
 - Máquina de Estados (State Machine)
-El programa de clasificación no es una lista simple de instrucciones secuenciales (como una receta de cocina lineal), sino una Máquina de Estados. ¿Por qué? Porque en robótica las acciones tardan tiempo. Mover el brazo tarda 3 segundos. Abrir la pinza tarda 1 segundo. ¿Cómo funciona? El código sabe en qué "estado" está (ej: ABRIENDO_GRIPPER). Tiene un temporizador que chequea periódicamente. Cuando pasa el tiempo necesario, cambia el "estado" al siguiente paso lógico (ej: BAJANDO_A_MESA). Esto hace que el programa sea, robusto y no se congele.
+El software que gestiona la secuencia de clasificación no opera como un simple script lineal (ejecuta A, luego B, luego C). En cambio, está estructurado como una Máquina de Estados (State Machine).
+
+¿Por qué es crucial esta arquitectura? En robótica, las operaciones físicas no son instantáneas: un movimiento puede demorar 3 segundos, y la apertura de una pinza 1 segundo. El programa debe gestionar estas esperas sin bloquearse.
+
+El corazón del sistema sabe con precisión en qué "Estado" se encuentra actualmente (por ejemplo: STATE_GRIPPING_CLOSING). Un temporizador interno verifica si el tiempo asignado a ese estado ha transcurrido. Una vez cumplido el plazo, el sistema transiciona automáticamente al siguiente "Estado" lógico de la secuencia (por ejemplo: STATE_LIFTING_CUBE). Este enfoque garantiza un control robusto, asíncrono y evita interrupciones o congelamientos del programa.
 - Cinemática Directa vs Inversa
-En el Teleop, usamos lo que conceptualmente es cinemática directa: controlamos los ángulos ($q_1, q_2...$) y el robot llega a una posición resultante. Es muy seguro. En el Clasificador, usamos Cinemática Inversa (IK): Le decimos al robot "Ve a la coordenada X=20cm, Y=10cm". El robot debe calcular internamente cuánto girar cada motor para lograrlo. Si la coordenada está fuera del alcance físico del robot, el sistema reportará un error y abortará la secuencia para protegerse.
+Para mover el brazo, se utilizan dos enfoques fundamentales de cinemática:Cinemática Directa (Forward Kinematics): En el modo de teleoperación (Teleop), el usuario está aplicando conceptualmente cinemática directa. Se envían comandos para controlar directamente los ángulos de cada articulación ($q_1, q_2, q_3...$). El sistema calcula cuál es la posición final ($X, Y, Z$) resultante. Es un método intrínsecamente seguro ya que el comando es la posición del motor.Cinemática Inversa (Inverse Kinematics - IK): El clasificador automático utiliza IK. El comando es la posición deseada en el espacio de trabajo: "Mueve el efector final a $X=0.20$m, $Y=0.10$m". El algoritmo debe resolver internamente los ángulos ($q_i$) necesarios para alcanzar ese punto. Si la coordenada de destino está fuera del alcance físico (workspace) del robot, el sistema de IK detectará que no hay una solución válida, reportará un error e interrumpirá la tarea para prevenir daños.
 - Comunicación ROS2
-El proyecto demuestra los dos pilares de comunicación en ROS: Topics (Tópicos): Usados para información rápida y unidireccional. El usuario o un sistema externo publica "cubo" en el tópico /figure_type, y el robot lo escucha para iniciar la tarea. Actions (Acciones): Usados para tareas largas. El nodo clasificador le dice al controlador "Muévete a esta posición". Como esto toma tiempo, usan un cliente de acción (FollowJointTrajectory) que permite esperar a que el movimiento termine antes de hacer otra cosa.
+El proyecto implementa los dos principales mecanismos de comunicación inter-proceso de ROS 2:
+
+Topics (Tópicos): Son ideales para la transmisión de datos rápida, continua y unidireccional (modelo Publicar/Suscribir). Se utilizan, por ejemplo, cuando un sensor o un usuario externo publica el tipo de objeto detectado (/figure_type) al que el nodo clasificador está suscrito para iniciar su tarea.
+
+Actions (Acciones): Están diseñadas para manejar tareas de larga duración con la necesidad de feedback y cancelación (modelo Cliente/Servidor). Por ejemplo, cuando el nodo clasificador necesita que el robot se mueva, invoca una acción (típicamente FollowJointTrajectory). El cliente de acción le permite al clasificador esperar de manera controlada y no bloqueante hasta que el movimiento del brazo se haya completado exitosamente antes de proceder con el siguiente paso lógico de la Máquina de Estados.
 
 ## 1. Resumen del Proyecto
 Este proyecto implementa un sistema avanzado de control y automatización para el brazo robótico PhantomX Pincher utilizando ROS2 (Robot Operating System 2). El sistema está diseñado para realizar tareas de manipulación de objetos ("pick and place") de manera robusta y precisa.
