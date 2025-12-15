@@ -234,6 +234,27 @@ graph TD
     TopicJointStates --> MoveGroup
 ```
 
+### Diagrama de Flujo Lógico - Parte 1 (Clasificador)
+
+Lógica interna de la máquina de estados del clasificador.
+
+```mermaid
+graph TD
+    Start((Inicio)) --> Wait[/Esperar '/figure_type'/]
+    Wait --> Decide{¿Qué Figura?}
+    
+    Decide -->|Cubo| Path1[Ruta CANECA ROJA]
+    Decide -->|Cilindro| Path2[Ruta CANECA VERDE]
+    Decide -->|Pentágono| Path3[Ruta CANECA AZUL]
+    Decide -->|Rectángulo| Path4[Ruta CANECA AMARILLA]
+    
+    Path1 & Path2 & Path3 & Path4 --> GoPick[Ir a RECOLECCIÓN]
+    GoPick --> CloseGrip[Cerrar Gripper]
+    CloseGrip --> GoDrop[Ir a CANECA DESTINO]
+    GoDrop --> OpenGrip[Abrir Gripper]
+    OpenGrip --> GoHome[Volver a HOME]
+    GoHome --> Wait
+```
 
 ### Video Simulacion y implentación
 
@@ -414,6 +435,24 @@ graph TD
         TopicJointStates -.->|Lectura inicial| TeleopNode
     end
 ```
+
+### Diagrama de Flujo Lógico - Parte 2 (Teleoperación)
+
+Lógica de control de hardware directo.
+
+```mermaid
+graph TD
+    Input[/Teclado/] --> Detect{¿Tecla?}
+    
+    Detect -->|W/S/A/D| MoveJoint[Mover Articulación]
+    Detect -->|R/F| Grip[Control Gripper]
+    Detect -->|O/P| Vac[Control Ventosa]
+    
+    MoveJoint --> ROS2Action[Action Client: Trajectory]
+    Grip --> ROS2Action
+    Vac --> Serial[Serial: Arduino]
+```
+
 ## Plano de planta
 ![sss (1)](https://github.com/user-attachments/assets/250245a5-c6f1-4cf2-8943-86b3fe2717c8)
 
