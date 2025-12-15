@@ -413,67 +413,68 @@ A continuación se detallan los paquetes ROS 2 desarrollados y utilizados para c
 ### Diagrama de flujo parte 2 (Ventosa)
 ``` mermaid
 graph TD
-    %% Entradas
-    User((Usuario))
-    Keyboard[/Teclado/]
+  %% Entradas
+  User((Usuario))
+  Keyboard[/Teclado/]
 
-    %% Nodo Principal
-    subgraph "NODO: teleop_joint_node"
-        InputHandler[Detector de Teclas<br/>(tty/termios)]
-        
-        %% Lógica de Mapeo
-        MapJoints{Control<br/>Articular?}
-        MapTool{Herramienta?}
-        
-        %% Acciones Específicas
-        IncJoint[Incrementar/Decrementar<br/>Ángulo Articulación]
-        SetHome[Establecer<br/>Posición HOME]
-        CmdGripper[Comando<br/>Abrir/Cerrar]
-        CmdPump[Comando Serial<br/>ON/OFF]
-        
-        %% Clientes de Salida
-        ClientArm[["Action Client<br/>Arm Trajectory"]]
-        ClientGrip[["Action Client<br/>Gripper Trajectory"]]
-        SerialPort[("Puerto Serial<br/>(Arduino/Relé)")]
-        
-        %% Flujo Interno
-        InputHandler -->|Tecla Presionada| MapJoints
-        InputHandler -->|Tecla Presionada| MapTool
-        
-        MapJoints -->|W/S, A/D, Q/E, Z/X| IncJoint
-        MapJoints -->|Espacio / H| SetHome
-        
-        MapTool -->|R / F| CmdGripper
-        MapTool -->|O / P| CmdPump
-        
-        IncJoint --> ClientArm
-        SetHome --> ClientArm
-        CmdGripper --> ClientGrip
-        CmdPump --> SerialPort
-    end
+  %% Nodo Principal
+  subgraph Teleop["NODO: teleop_joint_node"]
+    InputHandler["Detector de Teclas<br/>(tty/termios)"]
 
-    %% Hardware / Salidas
-    RobotArm[Movimiento del Brazo]
-    RobotGrip[Movimiento Gripper]
-    VacuumPump[Bomba de Vacío]
+    %% Lógica de Mapeo
+    MapJoints{"Control<br/>Articular?"}
+    MapTool{"Herramienta?"}
 
-    %% Conexiones Externas
-    User --> Keyboard
-    Keyboard --> InputHandler
-    
-    ClientArm ==> RobotArm
-    ClientGrip ==> RobotGrip
-    SerialPort -.->|Protocolo Serial| VacuumPump
+    %% Acciones Específicas
+    IncJoint["Incrementar/Decrementar<br/>Ángulo Articulación"]
+    SetHome["Establecer<br/>Posición HOME"]
+    CmdGripper["Comando<br/>Abrir/Cerrar"]
+    CmdPump["Comando Serial<br/>ON/OFF"]
 
-    %% Leyenda de Teclas
-    noteIn[W/S: Hombro<br/>A/D: Base<br/>Q/E: Codo<br/>Z/X: Muñeca]
-    noteIn -.- MapJoints
+    %% Clientes de Salida
+    ClientArm["Action Client<br/>Arm Trajectory"]
+    ClientGrip["Action Client<br/>Gripper Trajectory"]
+    SerialPort["Puerto Serial<br/>(Arduino/Relé)"]
 
-    style User fill:#f9f,stroke:#333
-    style RobotArm fill:#bfb,stroke:#333
-    style RobotGrip fill:#bfb,stroke:#333
-    style VacuumPump fill:#ff9,stroke:#333
-    style SerialPort fill:#fbb,stroke:#333
+    %% Flujo Interno
+    InputHandler -->|"Tecla Presionada"| MapJoints
+    InputHandler -->|"Tecla Presionada"| MapTool
+
+    MapJoints -->|"W/S, A/D, Q/E, Z/X"| IncJoint
+    MapJoints -->|"Espacio / H"| SetHome
+
+    MapTool -->|"R / F"| CmdGripper
+    MapTool -->|"O / P"| CmdPump
+
+    IncJoint --> ClientArm
+    SetHome --> ClientArm
+    CmdGripper --> ClientGrip
+    CmdPump --> SerialPort
+  end
+
+  %% Hardware / Salidas
+  RobotArm["Movimiento del Brazo"]
+  RobotGrip["Movimiento Gripper"]
+  VacuumPump["Bomba de Vacío"]
+
+  %% Conexiones Externas
+  User --> Keyboard
+  Keyboard --> InputHandler
+
+  ClientArm ==> RobotArm
+  ClientGrip ==> RobotGrip
+  SerialPort -.->|"Protocolo Serial"| VacuumPump
+
+  %% Leyenda de Teclas
+  noteIn["W/S: Hombro<br/>A/D: Base<br/>Q/E: Codo<br/>Z/X: Muñeca"]
+  noteIn -.- MapJoints
+
+  %% Estilos
+  style User fill:#f9f,stroke:#333
+  style RobotArm fill:#bfb,stroke:#333
+  style RobotGrip fill:#bfb,stroke:#333
+  style VacuumPump fill:#ff9,stroke:#333
+  style SerialPort fill:#fbb,stroke:#333
 ```
 
 ### Diagrama de Flujo Lógico - Parte 2 (Teleoperación)
