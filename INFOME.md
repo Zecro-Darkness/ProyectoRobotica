@@ -143,9 +143,9 @@ Se ha verificado el archivo `phantom_ws/src/phantomx_pincher_description/urdf/ki
         3.  `canecaFrontalDerecha_link` (Verde)
         4.  `canecaFrontalIzquierda_link` (Azul)
     *   **Visual + Colisión:** Cada link utiliza el mesh STL `canecaGrande.stl` tanto para la etiqueta `<visual>` como para `<collision>`, asegurando que el planificador de movimientos (MoveIt) detecte estos objetos como obstáculos y evite chocarlos.
-
+<p align="center">
 <img width="625" height="805" alt="image" src="https://github.com/user-attachments/assets/72798851-94bc-4bf9-ae37-27e9e301ab17" />
-
+<p>
 
 ## 5. Comandos de Operación
 
