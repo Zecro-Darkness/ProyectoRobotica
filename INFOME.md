@@ -141,9 +141,9 @@ Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se 
 
 ```ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once```
 
-### Video
-#### simulacion
-#### robot real
+### Video Simulacion y implentación
+
+https://youtu.be/ROK0nHgKcZk
 
 ## Parte 2
 ### xacro actualizado
