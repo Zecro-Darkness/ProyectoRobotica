@@ -268,3 +268,52 @@ Paquete de configuración de planificación de movimiento.
 ### Diagrama de conexiones
 
 ![Imagen de WhatsApp 2025-12-14 a las 23 07 08_551955b0](https://github.com/user-attachments/assets/033d67c1-248d-4132-a8e8-b9855b293b0b)
+
+## Diagrama de flujo 
+### Diagrama de flujo parte 1
+
+``` mermaid
+graph TD
+    %% --- ESTILOS ---
+    classDef hardware fill:#ffebee,stroke:#c62828,stroke-width:2px;
+    classDef rosnode fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef topic fill:#f3e5f5,stroke:#4a148c,stroke-dasharray: 5 5;
+    
+    %% --- NODOS ---
+    VisionNode[/"(Cámara/Visión)\nPublicador de Figuras"/]:::rosnode
+    Clasificador[/"/clasificador_node\n(Lógica de Estado)"/]:::rosnode
+    Commander[/"/commander\n(Interfaz MoveIt C++)"/]:::rosnode
+    MoveGroup[/"/move_group\n(Planeación de Trayectorias)"/]:::rosnode
+    RobotStatePub[/"/robot_state_publisher"/]:::rosnode
+    
+    %% Controladores (Simulados o Reales)
+    ArmController[/"/joint_trajectory_controller"/]:::hardware
+    GripperController[/"/gripper_trajectory_controller"/]:::hardware
+    
+    %% --- TÓPICOS Y MENSAJES ---
+    TopicFigure(["/figure_type\n[std_msgs/String]"]):::topic
+    TopicPose(["/pose_command\n[phantomx_interfaces/PoseCommand]"]):::topic
+    TopicJointStates(["/joint_states\n[sensor_msgs/JointState]"]):::topic
+    
+    %% --- FLUJO ---
+    VisionNode --> TopicFigure
+    TopicFigure --> Clasificador
+    
+    Clasificador -- "Decisión de Rutina" --> TopicPose
+    TopicPose --> Commander
+    
+    Commander -- "MoveGroupInterface" --> MoveGroup
+    
+    %% Acciones
+    MoveGroup -- "Action: Execute Trajectory" --> ArmController
+    Clasificador -- "Action: FollowJointTrajectory" --> GripperController
+    
+    %% Feedback de Estado
+    ArmController --> TopicJointStates
+    GripperController --> TopicJointStates
+    TopicJointStates --> RobotStatePub
+    TopicJointStates --> MoveGroup
+```
+## Plano de planta
+![sss (1)](https://github.com/user-attachments/assets/250245a5-c6f1-4cf2-8943-86b3fe2717c8)
+
