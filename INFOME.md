@@ -249,9 +249,6 @@ El objetivo principal es dotar al robot de una interfaz de control manual direct
 
 ## 1. Añadir la Ventosa al Xacro
 
-**Requisito de la Rúbrica:**
-> "Añadir la ventosa al Xacro. Xacro actualizado con la ventosa integrada (y visual/colisiones si aplica)."
-
 **Cumplimiento en el Código:**
 Se encuentra implementado en el archivo `phantom_ws/src/phantomx_pincher_description/urdf/kit.xacro`.
 
@@ -259,6 +256,10 @@ Se encuentra implementado en el archivo `phantom_ws/src/phantomx_pincher_descrip
 *   **Geometría:** Utiliza el mesh `ensambleAirpump.stl` para la representación visual de alta fidelidad.
 *   **Colisiones:** Define una caja (`box`) que envuelve la estructura de la bomba para cálculos físicos eficientes (`<box size="0.062 0.0405 0.067" />`).
 *   **Integración:** Conectada mediante el joint fijo `base_airpump_joint` a la base del robot (`baseFija_link`), reflejando su montaje real en la estación.
+  
+<p align="center">
+  <img width="295" height="380" alt="image" src="https://github.com/user-attachments/assets/7dfc952d-a944-486d-9ccc-a170a12c4a2a" />
+<p>
 
 ## 2. Control por Teclado 
 
