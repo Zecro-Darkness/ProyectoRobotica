@@ -240,74 +240,74 @@ graph TD
 https://youtu.be/ROK0nHgKcZk
 
 ## Parte 2
-### objetivo
 
+## Objetivo
 El objetivo principal es dotar al robot de una interfaz de control manual directa y robusta para:
+*   **Control Articular Independiente:** Operar cada articulación paso a paso mediante el teclado para validación y posicionamiento preciso.
+*   **Manejo de Herramientas:** Integrar el accionamiento del Gripper y la **Bomba de Vacío** (sistema neumático) en la misma interfaz.
+*   **Seguridad y Pruebas:** Proveer funciones de "Home" y límites de seguridad para verificar el estado del hardware sin riesgos.
 
--**Control Articular Independiente**: Operar cada articulación paso a paso mediante el teclado para validación y posicionamiento preciso.
+## 1. Añadir la Ventosa al Xacro
 
--**Manejo de Herramientas**: Integrar el accionamiento del Gripper y la Bomba de Vacío (sistema neumático) en la misma interfaz.
+**Requisito de la Rúbrica:**
+> "Añadir la ventosa al Xacro. Xacro actualizado con la ventosa integrada (y visual/colisiones si aplica)."
 
--**Seguridad y Pruebas**: Proveer funciones de "Home" y límites de seguridad para verificar el estado del hardware sin riesgos.
+**Cumplimiento en el Código:**
+Se encuentra implementado en el archivo `phantom_ws/src/phantomx_pincher_description/urdf/kit.xacro`.
 
-### xacro actualizado
+*   **Link Implementado:** `airpump_link`
+*   **Geometría:** Utiliza el mesh `ensambleAirpump.stl` para la representación visual de alta fidelidad.
+*   **Colisiones:** Define una caja (`box`) que envuelve la estructura de la bomba para cálculos físicos eficientes (`<box size="0.062 0.0405 0.067" />`).
+*   **Integración:** Conectada mediante el joint fijo `base_airpump_joint` a la base del robot (`baseFija_link`), reflejando su montaje real en la estación.
 
-## Control por Teclado
+## 2. Control por Teclado 
 
-**Descripción del Requisito:** Se solicitó el desarrollo de una interfaz de teleoperación que permitiera manipular la estructura cinemática del robot PhantomX Pincher utilizando un periférico de entrada estándar (teclado). El objetivo es demostrar la capacidad de mover el robot de forma controlada sin depender de trayectorias pre-programadas.
+**Solución Implementada:**
+Para cumplir con este requerimiento, se desarrolló el nodo `teleop_joint_node` en ROS 2 (Python). A diferencia de los teleoperadores genéricos que envían velocidades (`cmd_vel`), este nodo implementa un **Control Articular Posicional**.
 
-**Solución Implementada:** Para cumplir con este requerimiento, se desarrolló el nodo teleop_joint_node en ROS 2 (Python). A diferencia de los teleoperadores genéricos que envían velocidades (cmd_vel), este nodo implementa un Control Articular Posicional.
+*   **Funcionalidades Clave:**
+    *   **Control Articular Independiente:** Permite mover cada joint (Base, Hombro, Codo, Muñeca) individualmente. Esto demuestra un control más fino que la cinemática inversa automática.
+    *   **Posiciones Predefinidas:** Comandos rápidos para ir a `Home` (Espacio) y `Home Vertical` (H).
 
-## 1. Funcionalidades 
-- **Control Articular Independiente:** Permite mover cada joint (Base, Hombro, Codo, Muñeca) individualmente para posicionar el robot con precisión.
-- **Control de Herramienta (Gripper/Ventosa):**
-  - **Gripper:** teclas `R` (Abrir) y `F` (Cerrar).
-  - **Ventosa (Bomba de Vacío):** integración con Arduino mediante un puente H. Se activa con `O` (Encender) y se desactiva con `P` (Apagar), cumpliendo específicamente con el componente de ventosa.
-- **Posiciones Predefinidas:** incluye comandos para ir a `Home` (`Espacio`) y `Home Vertical` (`H`) rápidamente.
+*   **Asignación de Teclas:**
 
-## Activación de Ventosa Mediante Teclado
+| Tecla | Función / Articulación | Descripción de Acción |
+| :--- | :--- | :--- |
+| **W / S** | Hombro (Joint 2) | Mueve el brazo principal hacia arriba (W) o abajo (S). |
+| **A / D** | Base (Joint 1) | Gira la base del robot hacia la izquierda (A) o derecha (D). |
+| **Q / E** | Codo (Joint 3) | Flexiona (Q) o extiende (E) el codo del robot. |
+| **Z / X** | Muñeca (Joint 4) | Mueve la muñeca hacia arriba (Z) o abajo (X). |
 
-**Descripción del Requisito:** El sistema debe incluir un mecanismo de efector final tipo ventosa (bomba de vacío) que pueda ser activado y desactivado a demanda mediante un comando específico del teclado, integrando hardware externo al ecosistema ROS.
+## 3. Activar la Ventosa mediante Teclado
 
-**Solución Implementada:** Dado que el controlador del robot no gestiona directamente relés de potencia, se implementó una arquitectura híbrida ROS-Microcontrolador:
+**Solución Implementada:**
+Dado que el controlador del robot no gestiona directamente relés de potencia de alto voltaje, se implementó una arquitectura híbrida **ROS-Microcontrolador**:
 
-- **Integración de Hardware:** Se utiliza una placa Arduino como interfaz de potencia. Esta placa controla un relé que abre o cierra el circuito de alimentación (12V) de la bomba de vacío.
+*   **Integración de Hardware:** Se utiliza una placa **Arduino** como interfaz de potencia. Esta placa controla un relé que abre o cierra el circuito de alimentación (12V) de la bomba de vacío.
+*   **Protocolo de Comunicación:** El nodo `teleop_joint_node` establece una conexión serial asíncrona (a 9600 baudios) con el microcontrolador a través del puerto `/dev/ttyACM0`.
 
-- **Protocolo de Comunicación:** El nodo `teleop_joint_node` establece una conexión serial asíncrona (a 9600 baudios) con el microcontrolador a través del puerto `/dev/ttyACM0`.
+*   **Lógica de Activación:**
+    *   **Tecla `O` (ON):** El nodo envía el comando de activación `'O'` al Arduino -> Arduino energiza relé -> Bomba succiona.
+    *   **Tecla `P` (OFF):** El nodo envía el comando `'P'` -> Arduino corta energía -> Objeto liberado.
 
-- **Lógica de Activación:**
-   - Al presionar la tecla `O` (Open/On), el nodo envía el comando de activación al Arduino, el cual energiza el relé para generar succión (*Pick*).
-   - Al presionar la tecla `P` (Power Off), se envía el comando de corte, desenergizando la bomba para soltar el objeto (*Place*).
+| Tecla | Función | Descripción |
+| :--- | :--- | :--- |
+| **O** | Ventosa ON | Envía señal al relé para activar la bomba (succión). |
+| **P** | Ventosa OFF | Envía señal al relé para desactivar la bomba (soltar). |
+| **R / F** | Gripper | Abre (R) o cierra (F) la pinza mecánica estándar. |
 
-## asignacion de teclas
+## 4. Comandos de Operación (Parte 2)
 
-| Tecla    | Función / Articulación | Descripción de Acción |
-|----------|-------------------------|-----------------------|
-| W / S    | Hombro (Joint 2)        | Mueve el brazo principal hacia arriba (`W`) o abajo (`S`). |
-| A / D    | Base (Joint 1)          | Gira la base del robot hacia la izquierda (`A`) o derecha (`D`). |
-| Q / E    | Codo (Joint 3)          | Flexiona (`Q`) o extiende (`E`) el codo del robot. |
-| Z / X    | Muñeca (Joint 4)        | Mueve la muñeca hacia arriba (`Z`) o abajo (`X`) para orientar el efector. |
-| O        | Ventosa ON              | Envía señal al relé para activar la bomba de vacío (succión). |
-| P        | Ventosa OFF             | Envía señal al relé para desactivar la bomba de vacío (soltar). |
-| R / F    | Gripper (Pinza)         | Abre (`R`) o cierra (`F`) la pinza mecánica original. |
-| Espacio  | Home                    | Lleva suavemente el robot a su posición de reposo inicial. |
-| H        | Home Vertical           | Coloca el robot en posición completamente vertical (tipo vela). |
-| Ctrl + C | Salir                   | Detiene el nodo de manera segura y cierra el puerto serial. |
-
-
-## 2. Comandos de operacion
 El orden de encendido es crítico para evitar conflictos de drivers.
 
-### Paso A: Iniciar controladores del robot
+**Paso A: Iniciar controladores del robot**
 Primero, se debe levantar toda la infraestructura de ROS 2 (Drivers Dynamixel + MoveIt):
-
 ```bash
-ros2 launch phantomx_pincher bringup_phantomx_pincher.launch.py
+ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py use_real_robot:=True
 ```
-### Paso B: Iniciar nodo de teleoperación
 
-En una nueva terminal (con el entorno *sourcing* activado), ejecuta el nodo de teclado:
-
+**Paso B: Iniciar nodo de teleoperación**
+En una nueva terminal (con el entorno sourcing activado), ejecuta el nodo de teclado:
 ```bash
 ros2 run phantomx_pincher_classification teleop_joint_node
 ```
