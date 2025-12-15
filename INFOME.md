@@ -144,7 +144,6 @@ Se ha verificado el archivo `phantom_ws/src/phantomx_pincher_description/urdf/ki
         4.  `canecaFrontalIzquierda_link` (Azul)
     *   **Visual + Colisión:** Cada link utiliza el mesh STL `canecaGrande.stl` tanto para la etiqueta `<visual>` como para `<collision>`, asegurando que el planificador de movimientos (MoveIt) detecte estos objetos como obstáculos y evite chocarlos.
 
-**Conclusión:** El archivo `kit.xacro` integra correctamente todos los elementos periféricos del entorno de trabajo con sus propiedades físicas completas.
 
 ## 5. Comandos de Operación
 
