@@ -214,7 +214,9 @@ graph TD
         CheckType{¿Qué Figura es?}
         
         %% Rutas Específicas
-       
+        RouteCubo[Ruta CUBO<br/>(Retorno Diferenciado)]
+        RouteRect[Ruta RECTÁNGULO<br/>(Optimizado)]
+        RouteSafe[Ruta ESTÁNDAR<br/>(Waypoints Seguros)]
         
         %% Estado: Depósito
         StateBin[Ir a CANECA<br/>(Roja/Verde/Azul/Amarilla)]
