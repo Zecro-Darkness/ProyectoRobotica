@@ -126,7 +126,30 @@ Para cumplir con el requerimiento de **"Implementación como nodo ROS 2 (listene
     *   En lugar de hardcodear estas posiciones en el código Python, se utiliza el parámetro de configuración `poses.yaml`.
     *   El nodo carga dinámicamente las coordenadas de `caneca_roja`, `caneca_verde`, `caneca_azul`, y `caneca_amarilla` al iniciarse. Esto permite ajustar la ubicación física de las canecas sin modificar el código fuente, cumpliendo con la flexibilidad solicitada.
 
-## 4. Comandos de Operación
+## 4. Actualización del Modelo Xacro (Soporte de Cámara y Canastillas)
+
+**Requisito de la Rúbrica:**
+> "Agregar canastilla y soporte/mástil de cámara en Xacro (visual + colisiones). Actualizar `kit.xacro` para incluir mástil y canastilla, con `visual` y `collision`..."
+
+**Cumplimiento en el Código:**
+Se ha verificado el archivo `phantom_ws/src/phantomx_pincher_description/urdf/kit.xacro` y cumple totalmente con los requisitos de modelado:
+
+*   **Soporte de Cámara (`camera_mast_link`):**
+    *   **Visual:** Se define como un cilindro de metal (`<cylinder radius="0.01" length="0.5" />`) que representa el mástil, e incluye un bloque negro adicional (`<box>`) para simular la cámara.
+    *   **Colisión:** Incluye la geometría de colisión correspondiente al cilindro del mástil.
+    *   **Ubicación:** Posicionado detrás del robot (`xyz="-0.15 0 0.0"`), tal como se suele requerir para no obstruir el área de trabajo.
+
+*   **Canastillas (Canecas):**
+    *   Se han implementado 4 links independientes para las canecas:
+        1.  `canecaLateralIzquierda_link` (Roja)
+        2.  `canecaLateralDerecha_link` (Amarilla)
+        3.  `canecaFrontalDerecha_link` (Verde)
+        4.  `canecaFrontalIzquierda_link` (Azul)
+    *   **Visual + Colisión:** Cada link utiliza el mesh STL `canecaGrande.stl` tanto para la etiqueta `<visual>` como para `<collision>`, asegurando que el planificador de movimientos (MoveIt) detecte estos objetos como obstáculos y evite chocarlos.
+
+**Conclusión:** El archivo `kit.xacro` integra correctamente todos los elementos periféricos del entorno de trabajo con sus propiedades físicas completas.
+
+## 5. Comandos de Operación
 
 Para que el robot reaccione a los comandos, primero debes iniciar Rviz y luego el nodo clasificador con los siguientes comandos:
 
@@ -163,6 +186,7 @@ Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se 
     ```bash
     ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once
     ```
+
 
 
 ### Diagrama de flujo
