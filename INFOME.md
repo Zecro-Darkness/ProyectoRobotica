@@ -212,7 +212,7 @@ Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se 
     ```
 
 
-### Diagrama de flujo parte 1
+### Diagrama de nodos parte 1
 
 ``` mermaid
 graph TD
