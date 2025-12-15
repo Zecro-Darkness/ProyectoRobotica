@@ -108,7 +108,7 @@ El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** pa
 6.  **Deposición:** Llega a la coordenada de la caneca asignada (ej: `caneca_roja`) y abre el gripper.
 7.  **Retorno:** Regresa a `HOME` siguiendo una ruta inversa segura.
 
-## 3. Arquitectura ROS 2 y Cumplimiento Técnico (Rubros Adicionales)
+## 3. Arquitectura ROS 2 y Cumplimiento Técnico
 
 Para cumplir con el requerimiento de **"Implementación como nodo ROS 2 (listener + publisher) para ejecutar la rutina"**, la arquitectura se diseñó de la siguiente manera:
 
