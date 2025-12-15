@@ -263,3 +263,8 @@ Paquete de configuración de planificación de movimiento.
 - **Importancia:** Permite que el robot planifique rutas para evitar colisiones consigo mismo y alcance las poses deseadas suavemente.
 
 
+## Circuito utilizado para controlar la bomba
+
+### Diagrama de conexiones
+
+![Imagen de WhatsApp 2025-12-14 a las 23 07 08_551955b0](https://github.com/user-attachments/assets/033d67c1-248d-4132-a8e8-b9855b293b0b)
