@@ -68,27 +68,24 @@ Garantizar movimientos seguros y repetibles mediante estados y posiciones predef
 
 ## Parte 1
 
-### Objetivo
+## Objetivo
 El objetivo es crear una rutina de robot que pueda recoger 4 objetos distintos que siempre se ubicarán en la zona de recolección y luego depositarlos en la caneca correspondiente según su tipo.
 
-Los objetos son:
+**Los objetos son:**
+*   Un cubo
+*   Un cilindro
+*   Un pentágono
+*   Un rectángulo
+*   *Nota: Todos estos objetos tendrán la misma altura.*
 
-- Un cubo
-- Un cilindro
-- Un pentágono
-- Un rectángulo
-Nota: Todos estos objetos tendrán la misma altura.
-
-La clasificación de los objetos en las canecas será:
-
-- El cubo debe dejarse en la caneca roja
-- El cilindro debe dejarse en la caneca verde
-- El pentágono debe dejarse en la caneca azul
-- El rectángulo debe dejarse en la caneca amarilla
+**La clasificación de los objetos en las canecas será:**
+*   El **cubo** debe dejarse en la **caneca roja**.
+*   El **cilindro** debe dejarse en la **caneca verde**.
+*   El **pentágono** debe dejarse en la **caneca azul**.
+*   El **rectángulo** debe dejarse en la **caneca amarilla**.
 
 ## 1. Implementación en Código
-La lógica se ha centralizado en el nodo 
-clasificador_node.py. Se utiliza un diccionario para mapear cada figura entrante con su destino (caneca) correspondiente, cumpliendo estrictamente con los colores solicitados.
+La lógica se ha centralizado en el nodo `clasificador_node.py`. Se utiliza un diccionario para mapear cada figura entrante con su destino (caneca) correspondiente, cumpliendo estrictamente con los colores solicitados.
 
 ```python
 # Extracto de clasificador_node.py
@@ -100,47 +97,74 @@ self.figure_to_bin = {
 }
 ```
 
-## 2. Lógica de Secuencia Completa 
-El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** para que la secuencia de *movimiento + agarre* sea robusta:
+## 2. Lógica de Secuencia Completa
+El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** para que la secuencia de movimiento + agarre sea robusta:
 
-1. **Recepción del comando:** el nodo escucha el tópico `/figure_type`.
-2. **Preparación:** mueve el robot a `HOME2` y abre el gripper.
-3. **Recolección:** baja a la posición de recolección (`recoleccion`) definida en `poses.yaml`.
-4. **Agarre:** cierra el gripper para sujetar la figura.
-5. **Transporte seguro:**
-   - retorna a `HOME2` antes de ir a la caneca para asegurar altura.
-6. **Deposición:** llega a la coordenada de la caneca asignada (ej: `caneca_roja`) y abre el gripper.
-7. **Retorno:** regresa a `HOME2` siguiendo la ruta inversa segura.
+1.  **Recepción del comando:** El nodo escucha el tópico `/figure_type`.
+2.  **Preparación:** Mueve el robot a `HOME` y abre el gripper.
+3.  **Recolección:** Baja a la posición de recolección (`recoleccion`) definida en `poses.yaml`.
+4.  **Agarre:** Cierra el gripper para sujetar la figura.
+5.  **Transporte seguro:** Retorna a posiciones seguras (waypoints) o `HOME` antes de ir a la caneca para asegurar altura y evitar colisiones.
+6.  **Deposición:** Llega a la coordenada de la caneca asignada (ej: `caneca_roja`) y abre el gripper.
+7.  **Retorno:** Regresa a `HOME` siguiendo una ruta inversa segura.
 
-## 3. Comandos de Operación
+## 3. Arquitectura ROS 2 y Cumplimiento Técnico (Rubros Adicionales)
 
-Para que el robot reaccione a los comandos, primero debes iniciar el Rviz con el siguiente comando y despues el nodo clasificador con los siguiente comandos:
+Para cumplir con el requerimiento de **"Implementación como nodo ROS 2 (listener + publisher) para ejecutar la rutina"**, la arquitectura se diseñó de la siguiente manera:
 
+*   **Nodo Clasificador (`clasificador_node`):**
+    *   Actúa como el cerebro de la operación.
+    *   **Listener (Suscriptor):** Se suscribe al tópico `/figure_type` (tipo `std_msgs/msg/String`). Esto cumple con la parte de "recibir tipo de figura".
+    *   **Publisher (Publicador):** Publica en el tópico `/pose_command`. Esto cumple con la parte de "publicar la secuencia de poses".
+
+*   **Mensaje Personalizado (`PoseCommand`):**
+    *   Se utiliza estrictamente el mensaje requerido `phantomx_pincher_interfaces/msg/PoseCommand`.
+    *   Este mensaje encapsula la posición deseada (`x, y, z`) y la orientación (`roll, pitch, yaw`), junto con un booleano para indicar si se requiere `cartesian_path`.
+
+*   **Gestión de Posición de Canecas:**
+    *   El requerimiento menciona "reciba... posición de canecas".
+    *   En lugar de hardcodear estas posiciones en el código Python, se utiliza el parámetro de configuración `poses.yaml`.
+    *   El nodo carga dinámicamente las coordenadas de `caneca_roja`, `caneca_verde`, `caneca_azul`, y `caneca_amarilla` al iniciarse. Esto permite ajustar la ubicación física de las canecas sin modificar el código fuente, cumpliendo con la flexibilidad solicitada.
+
+## 4. Comandos de Operación
+
+Para que el robot reaccione a los comandos, primero debes iniciar Rviz y luego el nodo clasificador con los siguientes comandos:
+
+**1. Activar Rviz (Simulación o Real):**
+Use `use_real_robot:=True` para conectar con el Phantom X Pincher real, o `False` para simulación.
+```bash
+ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py use_real_robot:=True
 ```
-// Activa Rviz se usa "True" para activar el robot real
-ros2 launch phantomx_pincher_bringup  phantomx_pincher.launch.py use_real_robot:=True
 
-//Activar el modo de clasificacion automatico
+**2. Activar el modo de clasificación automático:**
+```bash
 ros2 run phantomx_pincher_classification clasificador_node
 ```
 
+**3. Enviar Comandos de Clasificación:**
 Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se deben ejecutar los siguientes comandos en una terminal con el entorno ROS2 cargado:
 
-**Clasificar CUBO (Caneca Roja):**
+*   **Clasificar CUBO (Caneca Roja):**
+    ```bash
+    ros2 topic pub /figure_type std_msgs/msg/String "data: 'cubo'" --once
+    ```
 
-```ros2 topic pub /figure_type std_msgs/msg/String "data: 'cubo'" --once```
+*   **Clasificar CILINDRO (Caneca Verde):**
+    ```bash
+    ros2 topic pub /figure_type std_msgs/msg/String "data: 'cilindro'" --once
+    ```
 
-**Clasificar CILINDRO (Caneca Verde):**
+*   **Clasificar PENTÁGONO (Caneca Azul):**
+    ```bash
+    ros2 topic pub /figure_type std_msgs/msg/String "data: 'pentagono'" --once
+    ```
 
-```ros2 topic pub /figure_type std_msgs/msg/String "data: 'cilindro'" --once```
+*   **Clasificar RECTÁNGULO (Caneca Amarilla):**
+    ```bash
+    ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once
+    ```
 
-**Clasificar PENTÁGONO (Caneca Azul):**
 
-```ros2 topic pub /figure_type std_msgs/msg/String "data: 'pentagono'" --once```
-
-**Clasificar RECTÁNGULO (Caneca Amarilla):**
-
-```ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once```
 ### Diagrama de flujo
 ``` mermaid
 graph TD
