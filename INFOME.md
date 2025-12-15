@@ -496,48 +496,49 @@ graph TD
 ### Diaglama de fumciomamiemto gemelal
 
 ```mermaid
-mermaid
 graph LR
-    %% Bloques de Hardware / Externos
-    User((Usuario))
-    Arduino[("Arduino<br/>(Bomba Vacío)")]
-    RealRobot[("Robot Real<br/>(Dynamixel)")]
+  %% Bloques de Hardware / Externos
+  User((Usuario))
+  Arduino["Arduino<br/>(Bomba Vacío)"]
+  RealRobot["Robot Real<br/>(Dynamixel)"]
 
-    %% Nodos ROS 2
-    NodeClass[("/clasificador_node")]
-    NodeTeleop[("/teleop_joint_node")]
-    NodeMoveIt[("/move_group<br/>(MoveIt)")]
-    NodeRviz[("/rviz2")]
+  %% Nodos ROS 2
+  NodeClass["/clasificador_node"]
+  NodeTeleop["/teleop_joint_node"]
+  NodeMoveIt["/move_group<br/>(MoveIt)"]
+  NodeRviz["/rviz2"]
 
-    %% Tópicos
-    TopicFigType[("/figure_type")]
-    TopicPoseCmd[("/pose_command")]
-    TopicJointStates[("/joint_states")]
+  %% Tópicos
+  TopicFigType["/figure_type"]
+  TopicPoseCmd["/pose_command"]
+  TopicJointStates["/joint_states"]
 
-    %% Conexiones Parte 1 (Clasificación)
-    User -- "Publica 'cubo'" --> TopicFigType
-    TopicFigType --> NodeClass
-    NodeClass -- "Publica Pose" --> TopicPoseCmd
-    TopicPoseCmd -.-> NodeMoveIt
-    NodeClass -- "Acción Gripper" --> NodeMoveIt
+  %% Conexiones Parte 1 (Clasificación)
+  User -->|"Publica: cubo"| TopicFigType
+  TopicFigType --> NodeClass
+  NodeClass -->|"Publica Pose"| TopicPoseCmd
+  TopicPoseCmd -.-> NodeMoveIt
+  NodeClass -->|"Acción Gripper"| NodeMoveIt
 
-    %% Conexiones Parte 2 (Teleoperación)
-    User -- "Teclado" --> NodeTeleop
-    NodeTeleop -- "Acción Joint/Gripper" --> NodeMoveIt
-    NodeTeleop -- "Serial (ttyACM0)" --> Arduino
+  %% Conexiones Parte 2 (Teleoperación)
+  User -->|"Teclado"| NodeTeleop
+  NodeTeleop -->|"Acción Joint/Gripper"| NodeMoveIt
+  NodeTeleop -->|"Serial (ttyACM0)"| Arduino
 
-    %% Feedback del Robot
-    NodeMoveIt -- "Control Motores" --> RealRobot
-    RealRobot -- "Feedback Articular" --> TopicJointStates
-    TopicJointStates --> NodeRviz
-    TopicJointStates --> NodeClass
+  %% Feedback del Robot
+  NodeMoveIt -->|"Control Motores"| RealRobot
+  RealRobot -->|"Feedback Articular"| TopicJointStates
+  TopicJointStates --> NodeRviz
+  TopicJointStates --> NodeClass
 
-    %% Estilos
-    style NodeClass fill:#ccf,stroke:#333
-    style NodeTeleop fill:#cfc,stroke:#333
-    style NodeMoveIt fill:#fcc,stroke:#333
-    style TopicFigType fill:#eee,stroke:#333
-    style TopicPoseCmd fill:#eee,stroke:#333
+  %% Estilos
+  style NodeClass fill:#ccf,stroke:#333
+  style NodeTeleop fill:#cfc,stroke:#333
+  style NodeMoveIt fill:#fcc,stroke:#333
+  style TopicFigType fill:#eee,stroke:#333
+  style TopicPoseCmd fill:#eee,stroke:#333
+  style TopicJointStates fill:#eee,stroke:#333
+
 ```
 
 ## Plano de planta
