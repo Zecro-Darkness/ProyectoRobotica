@@ -215,8 +215,6 @@ graph TD
         
         %% Rutas Específicas
        
-        RouteRect[Ruta RECTÁNGULO<br/>(Optimizado)]
-        RouteSafe[Ruta ESTÁNDAR<br/>(Waypoints Seguros)]
         
         %% Estado: Depósito
         StateBin[Ir a CANECA<br/>(Roja/Verde/Azul/Amarilla)]
