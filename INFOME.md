@@ -314,6 +314,52 @@ graph TD
     TopicJointStates --> RobotStatePub
     TopicJointStates --> MoveGroup
 ```
+### Diagrama de flujo parte 2 (Ventosa)
+``` mermaid
+graph TD
+    %% --- ESTILOS ---
+    classDef hardware fill:#ffebee,stroke:#c62828,stroke-width:2px;
+    classDef rosnode fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
+    classDef peripheral fill:#fff3e0,stroke:#e65100,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef topic fill:#f3e5f5,stroke:#4a148c,stroke-dasharray: 5 5;
+
+    %% --- NODOS ---
+    UserInput[/"Usuario (Teclado)\nstdin"/]:::peripheral
+    TeleopNode[/"/teleop_joint_node\n(Controlador Principal)"/]:::rosnode
+    RobotStatePub[/"/robot_state_publisher"/]:::rosnode
+    
+    %% Hardware
+    Arduino[/"Arduino UNO\n(Control Relé)"/]:::hardware
+    Pump[/"Bomba de Vacío\n(Actuador)"/]:::hardware
+    ArmController[/"/joint_trajectory_controller"/]:::hardware
+    GripperController[/"/gripper_trajectory_controller"/]:::hardware
+
+    %% --- TÓPICOS ---
+    TopicJointStates(["/joint_states\n[sensor_msgs/JointState]"]):::topic
+
+    %% --- FLUJO DE CONTROL ---
+    UserInput -- "Teclas: W,A,S,D..." --> TeleopNode
+    UserInput -- "Teclas: O, P (Relé)" --> TeleopNode
+
+    %% Control de Brazo (Acciones)
+    TeleopNode -- "Action: FollowJointTrajectory\n(Target Pose)" --> ArmController
+    TeleopNode -- "Action: FollowJointTrajectory\n(Open/Close)" --> GripperController
+
+    %% Control de Hardware Externo
+    TeleopNode -- "Serial /dev/ttyACM0\nComando: 'O'/'P'" --> Arduino
+    Arduino -- "Señal Digital" --> Pump
+
+    %% Feedback Visual
+    ArmController --> TopicJointStates
+    GripperController --> TopicJointStates
+    TopicJointStates --> TeleopNode
+    TopicJointStates --> RobotStatePub
+    
+    %% Nota
+    subgraph Sincronización
+        TopicJointStates -.->|Lectura inicial| TeleopNode
+    end
+```
 ## Plano de planta
 ![sss (1)](https://github.com/user-attachments/assets/250245a5-c6f1-4cf2-8943-86b3fe2717c8)
 
