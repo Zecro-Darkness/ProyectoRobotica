@@ -1,0 +1,9 @@
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/uninstall.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/phantomx_pincher_uninstall.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/test.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/edit_cache.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/rebuild_cache.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/list_install_components.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/install.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/install/local.dir
+/home/juan/Proyecto/KIT_Phantom_X_Pincher_ROS2/phantom_ws/build/phantomx_pincher/CMakeFiles/install/strip.dir
