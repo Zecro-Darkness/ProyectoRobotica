@@ -447,7 +447,7 @@ A continuación se detallan los paquetes ROS 2 desarrollados y utilizados para c
 *   **Uso:** Es invocado internamente por el `bringup` para habilitar la planificación de trayectorias y evitación de colisiones.
 *   
 
-### Diagrama de flujo parte 2 (Ventosa)
+### Diagrama de flujo - Parte 2 (Ventosa)
 ``` mermaid
 graph TD
   %% Entradas
@@ -530,7 +530,7 @@ graph TD
     Grip --> ROS2Action
     Vac --> Serial[Serial: Arduino]
 ```
-### Diagrama de funcionamiento general parte 2
+### Diagrama de funcionamiento general - Parte 2
 
 ```mermaid
 graph LR
