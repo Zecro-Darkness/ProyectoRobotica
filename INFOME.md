@@ -193,77 +193,66 @@ Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se 
 
 ``` mermaid
 graph TD
-    %% Nodos de Comunicación
-    TopicIn[("/figure_type<br/>(std_msgs/String)")]
-    TopicOut[("/pose_command<br/>(PoseCommand)")]
-    ActionGripper[("Action Server<br/>Gripper Controller")]
+  %% Nodos de Comunicación
+  TopicIn["/figure_type<br/>(std_msgs/String)"]
+  TopicOut["/pose_command<br/>(PoseCommand)"]
+  ActionGripper["Action Server<br/>Gripper Controller"]
 
-    %% Nodo Principal
-    subgraph "NODO: clasificador_node"
-        Start((Inicio))
-        WaitInput[/Esperar Figura/]
-        DecideBin{Determinar<br/>Caneca}
-        
-        %% Estado: Inicio de Secuencia
-        StateHome[Ir a HOME]
-        StateOpen1[Abrir Gripper]
-        StatePick[Ir a RECOLECCIÓN]
-        StateClose[Cerrar Gripper]
-        
-        %% Ramas de Decisión
-        CheckType{¿Qué Figura es?}
-        
-        %% Rutas Específicas
-        RouteCubo[Ruta CUBO<br/>(Retorno Diferenciado)]
-        RouteRect[Ruta RECTÁNGULO<br/>(Optimizado)]
-        RouteSafe[Ruta ESTÁNDAR<br/>(Waypoints Seguros)]
-        
-        %% Estado: Depósito
-        StateBin[Ir a CANECA<br/>(Roja/Verde/Azul/Amarilla)]
-        StateOpen2[Abrir Gripper<br/>(Soltar)]
-        StateReturn[Retorno a HOME]
-        
-        End((Fin Secuencia))
+  %% Nodo Principal
+  subgraph Clasificador["NODO: clasificador_node"]
+    Start((Inicio))
+    WaitInput[/Esperar Figura/]
+    DecideBin{"Determinar<br/>Caneca"}
 
-        %% Flujo Actual
-        Start --> WaitInput
-        WaitInput --> DecideBin
-        DecideBin --> StateHome
-        StateHome --> StateOpen1
-        StateOpen1 --> StatePick
-        StatePick --> StateClose
-        StateClose --> CheckType
-        
-        %% Conexiones Lógicas
-        CheckType -- Cubo --> RouteCubo
-        CheckType -- Rectángulo --> RouteRect
-        CheckType -- Cilindro/Pentágono --> RouteSafe
-        
-        RouteCubo --> StateBin
-        RouteRect --> StateBin
-        RouteSafe --> StateBin
-        
-        StateBin --> StateOpen2
-        StateOpen2 --> StateReturn
-        StateReturn --> WaitInput
-    end
+    StateHome["Ir a HOME"]
+    StateOpen1["Abrir Gripper"]
+    StatePick["Ir a RECOLECCIÓN"]
+    StateClose["Cerrar Gripper"]
 
-    %% Interacciones Externas
-    TopicIn -->|Recibe: 'cubo'| WaitInput
-    StateHome -->|Publica Pose| TopicOut
-    StatePick -->|Publica Pose| TopicOut
-    StateBin -->|Publica Pose| TopicOut
-    StateReturn -->|Publica Pose| TopicOut
-    
-    StateOpen1 -.->|Client Goal| ActionGripper
-    StateClose -.->|Client Goal| ActionGripper
-    StateOpen2 -.->|Client Goal| ActionGripper
+    CheckType{"¿Qué Figura es?"}
 
-    %% Estilos
-    style TopicIn fill:#f9f,stroke:#333,stroke-width:2px
-    style TopicOut fill:#bbf,stroke:#333,stroke-width:2px
-    style ActionGripper fill:#bfb,stroke:#333,stroke-width:2px
-    style CheckType fill:#ff9,stroke:#333,stroke-width:4px
+    RouteCubo["Ruta CUBO<br/>Retorno Diferenciado"]
+    RouteRect["Ruta RECTÁNGULO<br/>Optimizado"]
+    RouteSafe["Ruta ESTÁNDAR<br/>Waypoints Seguros"]
+
+    StateBin["Ir a CANECA<br/>(Roja/Verde/Azul/Amarilla)"]
+    StateOpen2["Abrir Gripper<br/>(Soltar)"]
+    StateReturn["Retorno a HOME"]
+
+    End((Fin Secuencia))
+
+    Start --> WaitInput
+    WaitInput --> DecideBin
+    DecideBin --> StateHome --> StateOpen1 --> StatePick --> StateClose --> CheckType
+
+    CheckType -- "Cubo" --> RouteCubo
+    CheckType -- "Rectángulo" --> RouteRect
+    CheckType -- "Cilindro / Pentágono" --> RouteSafe
+
+    RouteCubo --> StateBin
+    RouteRect --> StateBin
+    RouteSafe --> StateBin
+
+    StateBin --> StateOpen2 --> StateReturn --> WaitInput
+  end
+
+  %% Interacciones Externas
+  TopicIn -->|Recibe: cubo| WaitInput
+  StateHome -->|Publica Pose| TopicOut
+  StatePick -->|Publica Pose| TopicOut
+  StateBin -->|Publica Pose| TopicOut
+  StateReturn -->|Publica Pose| TopicOut
+
+  StateOpen1 -.->|Client Goal| ActionGripper
+  StateClose -.->|Client Goal| ActionGripper
+  StateOpen2 -.->|Client Goal| ActionGripper
+
+  %% Estilos
+  style TopicIn fill:#f9f,stroke:#333,stroke-width:2px
+  style TopicOut fill:#bbf,stroke:#333,stroke-width:2px
+  style ActionGripper fill:#bfb,stroke:#333,stroke-width:2px
+  style CheckType fill:#ff9,stroke:#333,stroke-width:4px
+
 ```
 
 ### Diagrama de Flujo Lógico - Parte 1 (Clasificador)
