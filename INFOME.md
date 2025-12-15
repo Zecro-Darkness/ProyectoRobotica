@@ -362,7 +362,7 @@ ros2 run phantomx_pincher_classification teleop_joint_node
 ![Imagen de WhatsApp 2025-12-14 a las 23 07 08_551955b0](https://github.com/user-attachments/assets/033d67c1-248d-4132-a8e8-b9855b293b0b)
 
 ### Codigo arduino para el control de la bomba
-
+´´´ cpp
 // Pin donde está conectado el módulo de relé
 const int relayPin = 8;
 
@@ -398,7 +398,7 @@ void loop() {
     }
   }
 }
-
+´´´
 # Paquetes Creados y Propósito
 
 A continuación se detallan los paquetes ROS 2 desarrollados y utilizados para cumplir con las Partes 1 y 2, incluyendo sus nodos principales y comandos de ejecución.
