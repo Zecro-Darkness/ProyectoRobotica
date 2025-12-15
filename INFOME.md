@@ -193,45 +193,77 @@ Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se 
 
 ``` mermaid
 graph TD
-    %% --- ESTILOS ---
-    classDef hardware fill:#ffebee,stroke:#c62828,stroke-width:2px;
-    classDef rosnode fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
-    classDef topic fill:#f3e5f5,stroke:#4a148c,stroke-dasharray: 5 5;
+    %% Nodos de Comunicación
+    TopicIn[("/figure_type<br/>(std_msgs/String)")]
+    TopicOut[("/pose_command<br/>(PoseCommand)")]
+    ActionGripper[("Action Server<br/>Gripper Controller")]
+
+    %% Nodo Principal
+    subgraph "NODO: clasificador_node"
+        Start((Inicio))
+        WaitInput[/Esperar Figura/]
+        DecideBin{Determinar<br/>Caneca}
+        
+        %% Estado: Inicio de Secuencia
+        StateHome[Ir a HOME]
+        StateOpen1[Abrir Gripper]
+        StatePick[Ir a RECOLECCIÓN]
+        StateClose[Cerrar Gripper]
+        
+        %% Ramas de Decisión
+        CheckType{¿Qué Figura es?}
+        
+        %% Rutas Específicas
+        RouteCubo[Ruta CUBO<br/>(Retorno Diferenciado)]
+        RouteRect[Ruta RECTÁNGULO<br/>(Optimizado)]
+        RouteSafe[Ruta ESTÁNDAR<br/>(Waypoints Seguros)]
+        
+        %% Estado: Depósito
+        StateBin[Ir a CANECA<br/>(Roja/Verde/Azul/Amarilla)]
+        StateOpen2[Abrir Gripper<br/>(Soltar)]
+        StateReturn[Retorno a HOME]
+        
+        End((Fin Secuencia))
+
+        %% Flujo Actual
+        Start --> WaitInput
+        WaitInput --> DecideBin
+        DecideBin --> StateHome
+        StateHome --> StateOpen1
+        StateOpen1 --> StatePick
+        StatePick --> StateClose
+        StateClose --> CheckType
+        
+        %% Conexiones Lógicas
+        CheckType -- Cubo --> RouteCubo
+        CheckType -- Rectángulo --> RouteRect
+        CheckType -- Cilindro/Pentágono --> RouteSafe
+        
+        RouteCubo --> StateBin
+        RouteRect --> StateBin
+        RouteSafe --> StateBin
+        
+        StateBin --> StateOpen2
+        StateOpen2 --> StateReturn
+        StateReturn --> WaitInput
+    end
+
+    %% Interacciones Externas
+    TopicIn -->|Recibe: 'cubo'| WaitInput
+    StateHome -->|Publica Pose| TopicOut
+    StatePick -->|Publica Pose| TopicOut
+    StateBin -->|Publica Pose| TopicOut
+    StateReturn -->|Publica Pose| TopicOut
     
-    %% --- NODOS ---
-    VisionNode[/"(Cámara/Visión)\nPublicador de Figuras"/]:::rosnode
-    Clasificador[/"/clasificador_node\n(Lógica de Estado)"/]:::rosnode
-    Commander[/"/commander\n(Interfaz MoveIt C++)"/]:::rosnode
-    MoveGroup[/"/move_group\n(Planeación de Trayectorias)"/]:::rosnode
-    RobotStatePub[/"/robot_state_publisher"/]:::rosnode
-    
-    %% Controladores (Simulados o Reales)
-    ArmController[/"/joint_trajectory_controller"/]:::hardware
-    GripperController[/"/gripper_trajectory_controller"/]:::hardware
-    
-    %% --- TÓPICOS Y MENSAJES ---
-    TopicFigure(["/figure_type\n[std_msgs/String]"]):::topic
-    TopicPose(["/pose_command\n[phantomx_interfaces/PoseCommand]"]):::topic
-    TopicJointStates(["/joint_states\n[sensor_msgs/JointState]"]):::topic
-    
-    %% --- FLUJO ---
-    VisionNode --> TopicFigure
-    TopicFigure --> Clasificador
-    
-    Clasificador -- "Decisión de Rutina" --> TopicPose
-    TopicPose --> Commander
-    
-    Commander -- "MoveGroupInterface" --> MoveGroup
-    
-    %% Acciones
-    MoveGroup -- "Action: Execute Trajectory" --> ArmController
-    Clasificador -- "Action: FollowJointTrajectory" --> GripperController
-    
-    %% Feedback de Estado
-    ArmController --> TopicJointStates
-    GripperController --> TopicJointStates
-    TopicJointStates --> RobotStatePub
-    TopicJointStates --> MoveGroup
+    StateOpen1 -.->|Client Goal| ActionGripper
+    StateClose -.->|Client Goal| ActionGripper
+    StateOpen2 -.->|Client Goal| ActionGripper
+
+    %% Estilos
+    style TopicIn fill:#f9f,stroke:#333,stroke-width:2px
+    style TopicOut fill:#bbf,stroke:#333,stroke-width:2px
+    style ActionGripper fill:#bfb,stroke:#333,stroke-width:2px
+    style CheckType fill:#ff9,stroke:#333,stroke-width:4px
 ```
 
 ### Diagrama de Flujo Lógico - Parte 1 (Clasificador)
