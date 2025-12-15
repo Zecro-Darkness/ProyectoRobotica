@@ -363,3 +363,6 @@ graph TD
 ## Plano de planta
 ![sss (1)](https://github.com/user-attachments/assets/250245a5-c6f1-4cf2-8943-86b3fe2717c8)
 
+## Video
+
+https://youtu.be/e51e9fDQWuY
