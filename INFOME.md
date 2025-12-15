@@ -384,6 +384,11 @@ ros2 run phantomx_pincher_classification teleop_joint_node
 
 ![Imagen de WhatsApp 2025-12-14 a las 23 07 08_551955b0](https://github.com/user-attachments/assets/033d67c1-248d-4132-a8e8-b9855b293b0b)
 
+**Descripción del circuito:**
+El Arduino controla un módulo de relé conectado al pin digital 8.
+El relé conmuta la alimentación de 12V de la bomba de vacío, permitiendo
+activar o desactivar la succión de forma segura desde ROS 2.
+
 ### Codigo arduino para el control de la bomba
 ``` cpp
 // Pin donde está conectado el módulo de relé
@@ -470,7 +475,7 @@ A continuación se detallan los paquetes ROS 2 desarrollados y utilizados para c
 *   **Uso:** Es invocado internamente por el `bringup` para habilitar la planificación de trayectorias y evitación de colisiones.
 *   
 
-### Diagrama de flujo - Parte 2 (Ventosa)
+### Diagrama de nodos - Parte 2 (Ventosa)
 ``` mermaid
 graph TD
   %% Entradas
