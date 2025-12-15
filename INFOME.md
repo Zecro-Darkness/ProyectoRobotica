@@ -31,6 +31,7 @@ Este proyecto implementa un sistema avanzado de control y automatización para e
 El desarrollo abarca dos modos principales de operación:
 
 -**Teleoperación Manual:** Permite a un operador controlar cada articulación del robot, el efector final (gripper) y herramientas externas (bomba de vacío) utilizando el teclado del ordenador.
+
 -**Clasificación Automática:** Un sistema autónomo que recibe un comando específico indicando el tipo de objeto ("cubo", "cilindro", "pentágono", "rectángulo") y ejecuta una coreografía de movimientos precisa para recoger el objeto y depositarlo en su contenedor específico.
 
 ## 2. Descripción General del Proyecto
@@ -174,6 +175,16 @@ graph TD
 https://youtu.be/ROK0nHgKcZk
 
 ## Parte 2
+### objetivo
+
+El objetivo principal es dotar al robot de una interfaz de control manual directa y robusta para:
+
+-**Control Articular Independiente**: Operar cada articulación paso a paso mediante el teclado para validación y posicionamiento preciso.
+
+-**Manejo de Herramientas**: Integrar el accionamiento del Gripper y la Bomba de Vacío (sistema neumático) en la misma interfaz.
+
+-**Seguridad y Pruebas**: Proveer funciones de "Home" y límites de seguridad para verificar el estado del hardware sin riesgos.
+
 ### xacro actualizado
 
 ## Control por Teclado
