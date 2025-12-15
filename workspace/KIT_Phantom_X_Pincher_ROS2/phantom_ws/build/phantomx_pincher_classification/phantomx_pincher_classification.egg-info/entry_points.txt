@@ -1,5 +1,0 @@
-[console_scripts]
-clasificador_node = phantomx_pincher_classification.clasificador_node:main
-teleop_joint_node = phantomx_pincher_classification.teleop_joint_node:main
-teleop_node = phantomx_pincher_classification.teleop_node:main
-
