@@ -530,7 +530,7 @@ graph TD
     Grip --> ROS2Action
     Vac --> Serial[Serial: Arduino]
 ```
-### Diaglama de fumciomamiemto gemelal
+### Diagrama de funcionamiento general parte 2
 
 ```mermaid
 graph LR
