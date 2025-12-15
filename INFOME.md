@@ -108,6 +108,29 @@ El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** pa
 6.  **Deposición:** Llega a la coordenada de la caneca asignada (ej: `caneca_roja`) y abre el gripper.
 7.  **Retorno:** Regresa a `HOME` siguiendo una ruta inversa segura.
 
+``` mermaid
+flowchart TD
+
+    A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
+
+    B --> C{¿Figura válida?}
+    C -- No --> B
+    C -- Sí --> D[Preparación<br/>Mover a HOME<br/>Abrir gripper]
+
+    D --> E[Recolección<br/>Mover a pose<br/>recoleccion]
+
+    E --> F[Agarre<br/>Cerrar gripper]
+
+    F --> G[Transporte seguro<br/>Posiciones seguras<br/>o HOME]
+
+    G --> H[Deposición<br/>Mover a caneca asignada<br/>Abrir gripper]
+
+    H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
+
+    I --> J[Secuencia completada]
+
+```
+
 ## 3. Arquitectura ROS 2 y Cumplimiento Técnico
 
 Para cumplir con el requerimiento de **"Implementación como nodo ROS 2 (listener + publisher) para ejecutar la rutina"**, la arquitectura se diseñó de la siguiente manera:
