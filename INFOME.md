@@ -140,6 +140,34 @@ Para verificar el funcionamiento de cada rutina sin necesidad de la cámara, se 
 **Clasificar RECTÁNGULO (Caneca Amarilla):**
 
 ```ros2 topic pub /figure_type std_msgs/msg/String "data: 'rectangulo'" --once```
+### Diagrama de flujo
+``` mermaid
+graph TD
+
+    %% ===== NODOS =====
+    FD[figure_detector_node]
+    CN[clasificador_node]
+    MP[motion_planner / brazo]
+    GRIP[gripper_trajectory_controller]
+
+    %% ===== TÓPICOS =====
+    FT[/figure_type\nstd_msgs/String/]
+    PC[/pose_command\nPoseCommand/]
+
+    %% ===== ACTION =====
+    ACT[[/gripper_trajectory_controller\nFollowJointTrajectory]]
+
+    %% ===== CONEXIONES =====
+    FD --> FT
+    FT --> CN
+
+    CN --> PC
+    PC --> MP
+
+    CN --> ACT
+    ACT --> GRIP
+
+```
 
 ### Video Simulacion y implentación
 
