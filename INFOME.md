@@ -361,6 +361,43 @@ ros2 run phantomx_pincher_classification teleop_joint_node
 
 ![Imagen de WhatsApp 2025-12-14 a las 23 07 08_551955b0](https://github.com/user-attachments/assets/033d67c1-248d-4132-a8e8-b9855b293b0b)
 
+### Codigo arduino para el control de la bomba
+
+// Pin donde está conectado el módulo de relé
+const int relayPin = 8;
+
+void setup() {
+  // Configuramos el pin del relé como salida
+  pinMode(relayPin, OUTPUT);
+
+  // Al inicio dejamos el relé apagado (bomba apagada)
+  digitalWrite(relayPin, LOW);
+
+  // Iniciamos la comunicación serial
+  Serial.begin(9600);
+  Serial.println("Sistema listo.");
+  Serial.println("Presiona 'e' para ENCENDER la bomba.");
+  Serial.println("Presiona 'q' para APAGAR la bomba.");
+}
+
+void loop() {
+  // Verificamos si llegó algún dato por el puerto serial
+  if (Serial.available() > 0) {
+    char tecla = Serial.read();  // Leemos el carácter recibido
+
+    if (tecla == 'o' || tecla == 'O') {
+      // Activar relé (bomba de vacío encendida)
+      digitalWrite(relayPin, HIGH);
+      Serial.println("Bomba ENCENDIDA.");
+    }
+
+    if (tecla == 'p' || tecla == 'P') {
+      // Desactivar relé (bomba de vacío apagada)
+      digitalWrite(relayPin, LOW);
+      Serial.println("Bomba APAGADA.");
+    }
+  }
+}
 
 # Paquetes Creados y Propósito
 
