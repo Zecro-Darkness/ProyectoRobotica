@@ -424,48 +424,67 @@ A continuación se detallan los paquetes ROS 2 desarrollados y utilizados para c
 ### Diagrama de flujo parte 2 (Ventosa)
 ``` mermaid
 graph TD
-    %% --- ESTILOS ---
-    classDef hardware fill:#ffebee,stroke:#c62828,stroke-width:2px;
-    classDef rosnode fill:#e3f2fd,stroke:#1565c0,stroke-width:2px;
-    classDef peripheral fill:#fff3e0,stroke:#e65100,stroke-width:2px,stroke-dasharray: 5 5;
-    classDef topic fill:#f3e5f5,stroke:#4a148c,stroke-dasharray: 5 5;
+    %% Entradas
+    User((Usuario))
+    Keyboard[/Teclado/]
 
-    %% --- NODOS ---
-    UserInput[/"Usuario (Teclado)\nstdin"/]:::peripheral
-    TeleopNode[/"/teleop_joint_node\n(Controlador Principal)"/]:::rosnode
-    RobotStatePub[/"/robot_state_publisher"/]:::rosnode
-    
-    %% Hardware
-    Arduino[/"Arduino UNO\n(Control Relé)"/]:::hardware
-    Pump[/"Bomba de Vacío\n(Actuador)"/]:::hardware
-    ArmController[/"/joint_trajectory_controller"/]:::hardware
-    GripperController[/"/gripper_trajectory_controller"/]:::hardware
-
-    %% --- TÓPICOS ---
-    TopicJointStates(["/joint_states\n[sensor_msgs/JointState]"]):::topic
-
-    %% --- FLUJO DE CONTROL ---
-    UserInput -- "Teclas: W,A,S,D..." --> TeleopNode
-    UserInput -- "Teclas: O, P (Relé)" --> TeleopNode
-
-    %% Control de Brazo (Acciones)
-    TeleopNode -- "Action: FollowJointTrajectory\n(Target Pose)" --> ArmController
-    TeleopNode -- "Action: FollowJointTrajectory\n(Open/Close)" --> GripperController
-
-    %% Control de Hardware Externo
-    TeleopNode -- "Serial /dev/ttyACM0\nComando: 'O'/'P'" --> Arduino
-    Arduino -- "Señal Digital" --> Pump
-
-    %% Feedback Visual
-    ArmController --> TopicJointStates
-    GripperController --> TopicJointStates
-    TopicJointStates --> TeleopNode
-    TopicJointStates --> RobotStatePub
-    
-    %% Nota
-    subgraph Sincronización
-        TopicJointStates -.->|Lectura inicial| TeleopNode
+    %% Nodo Principal
+    subgraph "NODO: teleop_joint_node"
+        InputHandler[Detector de Teclas<br/>(tty/termios)]
+        
+        %% Lógica de Mapeo
+        MapJoints{Control<br/>Articular?}
+        MapTool{Herramienta?}
+        
+        %% Acciones Específicas
+        IncJoint[Incrementar/Decrementar<br/>Ángulo Articulación]
+        SetHome[Establecer<br/>Posición HOME]
+        CmdGripper[Comando<br/>Abrir/Cerrar]
+        CmdPump[Comando Serial<br/>ON/OFF]
+        
+        %% Clientes de Salida
+        ClientArm[["Action Client<br/>Arm Trajectory"]]
+        ClientGrip[["Action Client<br/>Gripper Trajectory"]]
+        SerialPort[("Puerto Serial<br/>(Arduino/Relé)")]
+        
+        %% Flujo Interno
+        InputHandler -->|Tecla Presionada| MapJoints
+        InputHandler -->|Tecla Presionada| MapTool
+        
+        MapJoints -->|W/S, A/D, Q/E, Z/X| IncJoint
+        MapJoints -->|Espacio / H| SetHome
+        
+        MapTool -->|R / F| CmdGripper
+        MapTool -->|O / P| CmdPump
+        
+        IncJoint --> ClientArm
+        SetHome --> ClientArm
+        CmdGripper --> ClientGrip
+        CmdPump --> SerialPort
     end
+
+    %% Hardware / Salidas
+    RobotArm[Movimiento del Brazo]
+    RobotGrip[Movimiento Gripper]
+    VacuumPump[Bomba de Vacío]
+
+    %% Conexiones Externas
+    User --> Keyboard
+    Keyboard --> InputHandler
+    
+    ClientArm ==> RobotArm
+    ClientGrip ==> RobotGrip
+    SerialPort -.->|Protocolo Serial| VacuumPump
+
+    %% Leyenda de Teclas
+    noteIn[W/S: Hombro<br/>A/D: Base<br/>Q/E: Codo<br/>Z/X: Muñeca]
+    noteIn -.- MapJoints
+
+    style User fill:#f9f,stroke:#333
+    style RobotArm fill:#bfb,stroke:#333
+    style RobotGrip fill:#bfb,stroke:#333
+    style VacuumPump fill:#ff9,stroke:#333
+    style SerialPort fill:#fbb,stroke:#333
 ```
 
 ### Diagrama de Flujo Lógico - Parte 2 (Teleoperación)
@@ -483,6 +502,52 @@ graph TD
     MoveJoint --> ROS2Action[Action Client: Trajectory]
     Grip --> ROS2Action
     Vac --> Serial[Serial: Arduino]
+```
+### Diaglama de fumciomamiemto gemelal
+
+```mermaid
+mermaid
+graph LR
+    %% Bloques de Hardware / Externos
+    User((Usuario))
+    Arduino[("Arduino<br/>(Bomba Vacío)")]
+    RealRobot[("Robot Real<br/>(Dynamixel)")]
+
+    %% Nodos ROS 2
+    NodeClass[("/clasificador_node")]
+    NodeTeleop[("/teleop_joint_node")]
+    NodeMoveIt[("/move_group<br/>(MoveIt)")]
+    NodeRviz[("/rviz2")]
+
+    %% Tópicos
+    TopicFigType[("/figure_type")]
+    TopicPoseCmd[("/pose_command")]
+    TopicJointStates[("/joint_states")]
+
+    %% Conexiones Parte 1 (Clasificación)
+    User -- "Publica 'cubo'" --> TopicFigType
+    TopicFigType --> NodeClass
+    NodeClass -- "Publica Pose" --> TopicPoseCmd
+    TopicPoseCmd -.-> NodeMoveIt
+    NodeClass -- "Acción Gripper" --> NodeMoveIt
+
+    %% Conexiones Parte 2 (Teleoperación)
+    User -- "Teclado" --> NodeTeleop
+    NodeTeleop -- "Acción Joint/Gripper" --> NodeMoveIt
+    NodeTeleop -- "Serial (ttyACM0)" --> Arduino
+
+    %% Feedback del Robot
+    NodeMoveIt -- "Control Motores" --> RealRobot
+    RealRobot -- "Feedback Articular" --> TopicJointStates
+    TopicJointStates --> NodeRviz
+    TopicJointStates --> NodeClass
+
+    %% Estilos
+    style NodeClass fill:#ccf,stroke:#333
+    style NodeTeleop fill:#cfc,stroke:#333
+    style NodeMoveIt fill:#fcc,stroke:#333
+    style TopicFigType fill:#eee,stroke:#333
+    style TopicPoseCmd fill:#eee,stroke:#333
 ```
 
 ## Plano de planta
