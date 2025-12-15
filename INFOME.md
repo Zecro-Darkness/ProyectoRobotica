@@ -2,10 +2,10 @@
 
 ## Integrantes
 
-- Alejandro Mendivelso Torres
 - Juan Manuel Beltran Botello 
 - Oscar Jhondairo Siabato Leon
 - Edgar Esteban Erazo Lagos
+- Alejandro Mendivelso Torres
 
 
 ## Conceptos Técnicos Clave
