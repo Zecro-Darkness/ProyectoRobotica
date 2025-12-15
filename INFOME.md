@@ -313,67 +313,60 @@ En una nueva terminal (con el entorno sourcing activado), ejecuta el nodo de tec
 ros2 run phantomx_pincher_classification teleop_joint_node
 ```
 
-### Nodo de control de ventosa
- Diagrama tipo rqt_graph o equivalente, explicando tópicos/servicios/acciones y flujo de datos.
-### Foto/diagrama del circuito y explicación de cómo se controla desde el sistema.
-## Lista de paquetes creados, propósito, nodos principales y cómo ejecutarlos.
-Para el desarrollo del proyecto se modularizó la solución en diferentes paquetes, cada uno con una responsabilidad específica dentro de la arquitectura del robot. A continuación se detallan los paquetes creados y utilizados:
-
-### 1. `phantomx_pincher_classification` (Paquete Principal)
-
-Este es el paquete central desarrollado por el equipo. Contiene la lógica específica para la clasificación de figuras y el control manual requerido.
-
-- **Propósito:** Implementar los algoritmos de percepción, lógica de estados y teleoperación.
-- **Nodos principales:**
-  - `teleop_joint_node`: Nodo de teleoperación por teclado con control articular y manejo de ventosa.
-  - `clasificador_node`: Nodo principal que orquesta la rutina automática de detección, *pick* y *place*.
-  - `teleop_node` *(Legacy)*: Versión básica de teleoperación.
-
-### Comandos de ejecución
-
-```bash
-# Para control manual
-ros2 run phantomx_pincher_classification teleop_joint_node
-
-# Para rutina automática
-ros2 run phantomx_pincher_classification clasificador_node
-```  
-
-## 2. `phantomx_pincher_bringup`
-
-Paquete encargado del despliegue y orquestación del sistema.
-
-- **Propósito:** Contiene los archivos de lanzamiento (*launch files*) que inician todos los drivers, el modelo del robot y la configuración de MoveIt simultáneamente.
-- **Archivos clave:**
-  - `phantomx_pincher.launch.py`: *Launch file* maestro.
-
-### Comando de ejecución
-
-```bash
-ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py
-```
-
-## 3. `phantomx_pincher_description`
-
-Paquete que define la morfología del robot.
-
-- **Propósito:** Almacenar la descripción cinemática y visual del robot en formato URDF/XACRO. Define las longitudes de los eslabones, límites de las articulaciones y mallas visuales 3D.
-- **Uso:** Es invocado automáticamente por el *bringup* y MoveIt para saber “cómo es” el robot.
-
-## 4. `phantomx_pincher_moveit_config`
-
-Paquete de configuración de planificación de movimiento.
-
-- **Propósito:** Contiene la matriz de colisiones (SRDF), configuración de cinemática inversa (KDL/Kinematics) y controladores de trayectoria generados por el *MoveIt Setup Assistant*.
-- **Importancia:** Permite que el robot planifique rutas para evitar colisiones consigo mismo y alcance las poses deseadas suavemente.
-
-
 ## Circuito utilizado para controlar la bomba
 
 ### Diagrama de conexiones
 
 ![Imagen de WhatsApp 2025-12-14 a las 23 07 08_551955b0](https://github.com/user-attachments/assets/033d67c1-248d-4132-a8e8-b9855b293b0b)
 
+
+# Paquetes Creados y Propósito
+
+A continuación se detallan los paquetes ROS 2 desarrollados y utilizados para cumplir con las Partes 1 y 2, incluyendo sus nodos principales y comandos de ejecución.
+
+## 1. phantomx_pincher_classification
+**Propósito:** Paquete principal que contiene la "inteligencia" y la lógica de aplicación del robot. Alberga los nodos de alto nivel que orquestan las rutinas automáticas y el control manual.
+
+*   **Nodos Principales:**
+    *   `clasificador_node.py` (Parte 1): Maquina de estados para clasificación de figuras (Cubo, Cilindro, etc.). Suscribe a `/figure_type` y publica en `/pose_command`.
+    *   `teleop_joint_node.py` (Parte 2): Nodo de control manual por teclado. Gestiona movimiento articular directo y comunicación con Arduino para la ventosa.
+*   **Cómo ejecutarlo:**
+    *   Parte 1: `ros2 run phantomx_pincher_classification clasificador_node`
+    *   Parte 2: `ros2 run phantomx_pincher_classification teleop_joint_node`
+
+## 2. phantomx_pincher_description
+**Propósito:** Contiene la descripción física y visual del robot. Es fundamental para la simulación en RViz y para que MoveIt sepa planificar trayectorias sin chocar.
+
+*   **Archivos Clave (URDF/Xacro):**
+    *   `phantomx_pincher_arm.xacro`: Define la cinemática del brazo y sus articulaciones.
+    *   `kit.xacro`: Define el entorno de trabajo (**Canecas, Mástil de Cámara, Ventosa**). Aquí se integraron los nuevos elementos requeridos por la rúbrica.
+*   **Ejecución:** Se carga automáticamente al iniciar `phantomx_pincher_bringup`.
+
+## 3. phantomx_pincher_bringup
+**Propósito:** Paquete de orquestación (Launch files) y configuración. Facilita el inicio de todo el sistema con un solo comando.
+
+*   **Elementos Clave:**
+    *   `launch/phantomx_pincher.launch.py`: Launch file maestro que inicia: `robot_state_publisher`, `rviz`, controladores de hardware y MoveIt.
+    *   `config/poses.yaml`: Archivo de configuración donde se definen las coordenadas (X, Y, Z, RPY) de todas las **canecas**, posiciones de recolección y puntos seguros.
+*   **Cómo ejecutarlos:**
+    *   Simulación: `ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py use_real_robot:=False`
+    *   Real: `ros2 launch phantomx_pincher_bringup phantomx_pincher.launch.py use_real_robot:=True`
+
+## 4. phantomx_pincher_interfaces
+**Propósito:** Define estructuras de mensajes personalizados para facilitar la comunicación modular entre nodos.
+
+*   **Mensajes:**
+    *   `PoseCommand.msg`: Mensaje personalizado utilizado en la Parte 1. Estructura: `float64 x, y, z, roll, pitch, yaw` y `bool cartesian_path`.
+*   **Uso:** Utilizado por `clasificador_node` para enviar órdenes de movimiento abstractas.
+
+## 5. phantomx_pincher_moveit_config
+**Propósito:** Configuración generada para el framework de planeación de movimiento MoveIt 2.
+
+*   **contenido:**
+    *   SRDF (Semantic Robot Description Format): Define grupos de planeación (`arm`, `gripper`) y posturas predefinidas.
+    *   Configuración de controladores (`ros2_controllers.yaml`).
+*   **Uso:** Es invocado internamente por el `bringup` para habilitar la planificación de trayectorias y evitación de colisiones.
+*   
 
 ### Diagrama de flujo parte 2 (Ventosa)
 ``` mermaid
