@@ -128,9 +128,6 @@ Para cumplir con el requerimiento de **"Implementación como nodo ROS 2 (listene
 
 ## 4. Actualización del Modelo Xacro (Soporte de Cámara y Canastillas)
 
-**Requisito de la Rúbrica:**
-> "Agregar canastilla y soporte/mástil de cámara en Xacro (visual + colisiones). Actualizar `kit.xacro` para incluir mástil y canastilla, con `visual` y `collision`..."
-
 **Cumplimiento en el Código:**
 Se ha verificado el archivo `phantom_ws/src/phantomx_pincher_description/urdf/kit.xacro` y cumple totalmente con los requisitos de modelado:
 
