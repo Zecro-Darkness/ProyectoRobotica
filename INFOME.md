@@ -214,7 +214,7 @@ graph TD
         CheckType{¿Qué Figura es?}
         
         %% Rutas Específicas
-        RouteCubo[Ruta CUBO<br/>(Retorno Diferenciado)]
+       
         RouteRect[Ruta RECTÁNGULO<br/>(Optimizado)]
         RouteSafe[Ruta ESTÁNDAR<br/>(Waypoints Seguros)]
         
