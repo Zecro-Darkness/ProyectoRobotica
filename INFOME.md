@@ -283,22 +283,22 @@ Lógica interna de la máquina de estados del clasificador.
 
 ```mermaid
 flowchart TD
-  A[Inicio del nodo] --> B[Recepción del comando\nEscucha /figure_type]
+  A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
 
   B --> C{¿Figura válida?}
   C -- No --> B
-  C -- Sí --> D[Preparación\nMover a HOME\nAbrir gripper]
+  C -- Sí --> D[Preparación<br/>Mover a HOME<br/>Abrir gripper]
 
-  D --> D2[Mover a HOME2\n(antes de recolección)]
-  D2 --> E[Recolección\nMover a pose de recolección]
+  D --> D2[Mover a HOME2<br/>Antes de recolección]
+  D2 --> E[Recolección<br/>Mover a pose de recolección]
 
-  E --> E2[Mover a HOME2\n(después de recolección\nantes de cerrar gripper)]
-  E2 --> F[Agarre\nCerrar gripper]
+  E --> E2[Mover a HOME2<br/>Después de recolección<br/>Antes de cerrar gripper]
+  E2 --> F[Agarre<br/>Cerrar gripper]
 
-  F --> G[Transporte seguro\nPosiciones seguras o HOME]
-  G --> H[Deposición\nMover a caneca asignada\nAbrir gripper]
+  F --> G[Transporte seguro<br/>Posiciones seguras o HOME]
+  G --> H[Deposición<br/>Mover a caneca asignada<br/>Abrir gripper]
 
-  H --> I[Retorno\nRuta segura inversa\nVolver a HOME]
+  H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
   I --> J[Secuencia completada]
 
 
