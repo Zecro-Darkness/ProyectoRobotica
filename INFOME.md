@@ -283,28 +283,24 @@ Lógica interna de la máquina de estados del clasificador.
 
 ```mermaid
 flowchart TD
+    A((Inicio)) --> B["Esperar '/figure_type'"]
+    B --> C{"¿Qué figura?"}
 
-    A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
+    C -- Cubo --> R1["Ruta CANECA ROJA"]
+    C -- Cilindro --> R2["Ruta CANECA VERDE"]
+    C -- Pentágono --> R3["Ruta CANECA AZUL"]
+    C -- Rectángulo --> R4["Ruta CANECA AMARILLA"]
 
-    B --> C{¿Figura válida?}
-    C -- No --> B
-    C -- Sí --> D[Preparación<br/>Mover a HOME<br/>Abrir gripper]
+    R1 --> D["Ir a RECOLECCIÓN"]
+    R2 --> D
+    R3 --> D
+    R4 --> D
 
-    D --> D2[Pre-recolección<br/>Mover a HOME2]
-
-    D2 --> E[Recolección<br/>Mover a pose<br/>recolección]
-
-    E --> E2[Pre-agarre<br/>Mover a HOME2]
-
-    E2 --> F[Agarre<br/>Cerrar gripper]
-
-    F --> G[Transporte seguro<br/>Posiciones seguras<br/>o HOME]
-
-    G --> H[Deposición<br/>Mover a caneca asignada<br/>Abrir gripper]
-
-    H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
-
-    I --> J[Secuencia completada]
+    D --> E["Cerrar Gripper"]
+    E --> F["Ir a CANECA DESTINO"]
+    F --> G["Abrir Gripper"]
+    G --> H["Volver a HOME"]
+    H --> B
 
 ```
 ### Video Simulacion y implentación
