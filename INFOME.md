@@ -110,24 +110,23 @@ El robot no solo mueve el brazo, sino que ejecuta una **Máquina de Estados** pa
 
 ``` mermaid
 flowchart TD
+  A[Inicio del nodo] --> B[Recepción del comando\nEscucha /figure_type]
 
-    A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
+  B --> C{¿Figura válida?}
+  C -- No --> B
+  C -- Sí --> D[Preparación\nMover a HOME\nAbrir gripper]
 
-    B --> C{¿Figura válida?}
-    C -- No --> B
-    C -- Sí --> D[Preparación<br/>Mover a HOME<br/>Abrir gripper]
+  D --> D2[HOME2\nAntes de recolección]
+  D2 --> E[Recolección\nMover a pose de recolección]
 
-    D --> E[Recolección<br/>Mover a pose<br/>recoleccion]
+  E --> E2[HOME2\nAntes de cerrar gripper]
+  E2 --> F[Agarre\nCerrar gripper]
 
-    E --> F[Agarre<br/>Cerrar gripper]
+  F --> G[Transporte seguro\nPosiciones seguras o HOME]
+  G --> H[Deposición\nMover a caneca asignada\nAbrir gripper]
+  H --> I[Retorno\nRuta segura inversa\nVolver a HOME]
+  I --> J[Secuencia completada]
 
-    F --> G[Transporte seguro<br/>Posiciones seguras<br/>o HOME]
-
-    G --> H[Deposición<br/>Mover a caneca asignada<br/>Abrir gripper]
-
-    H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
-
-    I --> J[Secuencia completada]
 
 ```
 
