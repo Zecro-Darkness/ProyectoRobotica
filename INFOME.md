@@ -301,6 +301,7 @@ flowchart TD
   H --> I[Retorno\nRuta segura inversa\nVolver a HOME]
   I --> J[Secuencia completada]
 
+
 ```
 ### Video Simulacion y implentación
 
