@@ -282,21 +282,33 @@ graph TD
 Lógica interna de la máquina de estados del clasificador.
 
 ```mermaid
-graph TD
-    Start((Inicio)) --> Wait[/Esperar '/figure_type'/]
-    Wait --> Decide{¿Qué Figura?}
-    
-    Decide -->|Cubo| Path1[Ruta CANECA ROJA]
-    Decide -->|Cilindro| Path2[Ruta CANECA VERDE]
-    Decide -->|Pentágono| Path3[Ruta CANECA AZUL]
-    Decide -->|Rectángulo| Path4[Ruta CANECA AMARILLA]
-    
-    Path1 & Path2 & Path3 & Path4 --> GoPick[Ir a RECOLECCIÓN]
-    GoPick --> CloseGrip[Cerrar Gripper]
-    CloseGrip --> GoDrop[Ir a CANECA DESTINO]
-    GoDrop --> OpenGrip[Abrir Gripper]
-    OpenGrip --> GoHome[Volver a HOME]
-    GoHome --> Wait
+flowchart TD
+  A[Inicio del nodo] --> B[Recepción del comando\nEscucha /figure_type]
+
+  B --> C{¿Figura válida?}
+  C -- No --> B
+  C -- Sí --> D[Preparación\nMover a HOME\nAbrir gripper]
+
+  %% HOME2 antes de ir a recolección
+  D --> D2[Mover a HOME2\n(antes de recolección)]
+
+  %% Ir a recolección
+  D2 --> E[Recolección\nMover a pose de recolección]
+
+  %% HOME2 después de recolección y antes de cerrar gripper
+  E --> E2[Mover a HOME2\n(después de recolección\nantes de cerrar gripper)]
+
+  %% Cerrar gripper
+  E2 --> F[Agarre\nCerrar gripper]
+
+  %% Transporte y depósito
+  F --> G[Transporte seguro\nPosiciones seguras o HOME]
+  G --> H[Deposición\nMover a caneca asignada\nAbrir gripper]
+
+  %% Retorno
+  H --> I[Retorno\nRuta segura inversa\nVolver a HOME]
+  I --> J[Secuencia completada]
+
 ```
 
 ### Video Simulacion y implentación
