@@ -282,25 +282,29 @@ graph TD
 Lógica interna de la máquina de estados del clasificador.
 
 ```mermaid
-[flowchart TD
-  A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
+flowchart TD
 
-  B --> C{¿Figura válida?}
-  C -- No --> B
-  C -- Sí --> D[Preparación<br/>Mover a HOME<br/>Abrir gripper]
+    A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
 
-  D --> D2[Mover a HOME2<br/>Antes de recolección]
-  D2 --> E[Recolección<br/>Mover a pose de recolección]
+    B --> C{¿Figura válida?}
+    C -- No --> B
+    C -- Sí --> D[Preparación<br/>Mover a HOME<br/>Abrir gripper]
 
-  E --> E2[Mover a HOME2<br/>Después de recolección<br/>Antes de cerrar gripper]
-  E2 --> F[Agarre<br/>Cerrar gripper]
+    D --> D2[Pre-recolección<br/>Mover a HOME2]
 
-  F --> G[Transporte seguro<br/>Posiciones seguras o HOME]
-  G --> H[Deposición<br/>Mover a caneca asignada<br/>Abrir gripper]
+    D2 --> E[Recolección<br/>Mover a pose<br/>recolección]
 
-  H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
-  I --> J[Secuencia completada]
-](https://github.com/Zecro-Darkness/Robotica/blob/main/Proyecto/exposicion.md)
+    E --> E2[Pre-agarre<br/>Mover a HOME2]
+
+    E2 --> F[Agarre<br/>Cerrar gripper]
+
+    F --> G[Transporte seguro<br/>Posiciones seguras<br/>o HOME]
+
+    G --> H[Deposición<br/>Mover a caneca asignada<br/>Abrir gripper]
+
+    H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
+
+    I --> J[Secuencia completada]
 
 ```
 ### Video Simulacion y implentación
