@@ -291,16 +291,21 @@ flowchart TD
     C -- Pentágono --> R3["Ruta CANECA AZUL"]
     C -- Rectángulo --> R4["Ruta CANECA AMARILLA"]
 
-    R1 --> D["Ir a RECOLECCIÓN"]
-    R2 --> D
-    R3 --> D
-    R4 --> D
+    R1 --> H1["Ir a HOME2"]
+    R2 --> H1
+    R3 --> H1
+    R4 --> H1
 
+    H1 --> D["Ir a RECOLECCIÓN"]
     D --> E["Cerrar Gripper"]
-    E --> F["Ir a CANECA DESTINO"]
+
+    E --> H2["Ir a HOME2"]
+    H2 --> F["Ir a CANECA DESTINO"]
+
     F --> G["Abrir Gripper"]
     G --> H["Volver a HOME"]
     H --> B
+
 
 ```
 ### Video Simulacion y implentación
