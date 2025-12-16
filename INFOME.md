@@ -281,6 +281,8 @@ graph TD
 
 Lógica interna de la máquina de estados del clasificador.
 
+```
+mermaid
 flowchart TD
   A[Inicio del nodo] --> B[Recepción del comando\nEscucha /figure_type]
 
@@ -300,7 +302,7 @@ flowchart TD
   H --> I[Retorno\nRuta segura inversa\nVolver a HOME]
   I --> J[Secuencia completada]
 
-
+```
 ### Video Simulacion y implentación
 
 https://youtu.be/ROK0nHgKcZk
