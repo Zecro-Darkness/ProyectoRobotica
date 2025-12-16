@@ -281,7 +281,6 @@ graph TD
 
 Lógica interna de la máquina de estados del clasificador.
 
-```mermaid
 flowchart TD
   A[Inicio del nodo] --> B[Recepción del comando\nEscucha /figure_type]
 
@@ -289,27 +288,18 @@ flowchart TD
   C -- No --> B
   C -- Sí --> D[Preparación\nMover a HOME\nAbrir gripper]
 
-  %% HOME2 antes de ir a recolección
   D --> D2[Mover a HOME2\n(antes de recolección)]
-
-  %% Ir a recolección
   D2 --> E[Recolección\nMover a pose de recolección]
 
-  %% HOME2 después de recolección y antes de cerrar gripper
   E --> E2[Mover a HOME2\n(después de recolección\nantes de cerrar gripper)]
-
-  %% Cerrar gripper
   E2 --> F[Agarre\nCerrar gripper]
 
-  %% Transporte y depósito
   F --> G[Transporte seguro\nPosiciones seguras o HOME]
   G --> H[Deposición\nMover a caneca asignada\nAbrir gripper]
 
-  %% Retorno
   H --> I[Retorno\nRuta segura inversa\nVolver a HOME]
   I --> J[Secuencia completada]
 
-```
 
 ### Video Simulacion y implentación
 
