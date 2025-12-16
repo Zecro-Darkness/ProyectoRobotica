@@ -282,7 +282,7 @@ graph TD
 Lógica interna de la máquina de estados del clasificador.
 
 ```mermaid
-flowchart TD
+[flowchart TD
   A[Inicio del nodo] --> B[Recepción del comando<br/>Escucha /figure_type]
 
   B --> C{¿Figura válida?}
@@ -300,7 +300,7 @@ flowchart TD
 
   H --> I[Retorno<br/>Ruta segura inversa<br/>Volver a HOME]
   I --> J[Secuencia completada]
-
+](https://github.com/Zecro-Darkness/Robotica/blob/main/Proyecto/exposicion.md)
 
 ```
 ### Video Simulacion y implentación
